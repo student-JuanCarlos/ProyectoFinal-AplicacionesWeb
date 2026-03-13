@@ -1,0 +1,3 @@
+CREATE DATABASE App_Logistica_Inventario
+
+USE App_Logistica_Inventario
