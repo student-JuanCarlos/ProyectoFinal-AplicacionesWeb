@@ -272,24 +272,6 @@
 										},
 										{
 											"_type": "UMLAttributeView",
-											"_id": "AAAAAAGc6Rw/o2Cun6c=",
-											"_parent": {
-												"$ref": "AAAAAAGc6PnxFzkW+Zg="
-											},
-											"model": {
-												"$ref": "AAAAAAGc6Rw/gmCrT/g="
-											},
-											"fillColor": "#38bcff",
-											"font": "Arial;13;0",
-											"left": 85,
-											"top": 190,
-											"width": 139.80712890625,
-											"height": 13,
-											"text": "+TiempoDesactivado",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLAttributeView",
 											"_id": "AAAAAAGc6SykrHxChQs=",
 											"_parent": {
 												"$ref": "AAAAAAGc6PnxFzkW+Zg="
@@ -300,7 +282,7 @@
 											"fillColor": "#38bcff",
 											"font": "Arial;13;0",
 											"left": 85,
-											"top": 205,
+											"top": 190,
 											"width": 139.80712890625,
 											"height": 13,
 											"text": "+IdRol",
@@ -312,7 +294,7 @@
 									"left": 80,
 									"top": 65,
 									"width": 149.80712890625,
-									"height": 158
+									"height": 143
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -336,7 +318,7 @@
 											"fillColor": "#38bcff",
 											"font": "Arial;13;0",
 											"left": 85,
-											"top": 228,
+											"top": 213,
 											"width": 139.80712890625,
 											"height": 13,
 											"text": "+Login()",
@@ -354,7 +336,7 @@
 											"fillColor": "#38bcff",
 											"font": "Arial;13;0",
 											"left": 85,
-											"top": 243,
+											"top": 228,
 											"width": 139.80712890625,
 											"height": 13,
 											"text": "+GestionUsuarios()",
@@ -372,7 +354,7 @@
 											"fillColor": "#38bcff",
 											"font": "Arial;13;0",
 											"left": 85,
-											"top": 258,
+											"top": 243,
 											"width": 139.80712890625,
 											"height": 13,
 											"text": "+ListadoUsuarios()",
@@ -382,7 +364,7 @@
 									"fillColor": "#38bcff",
 									"font": "Arial;13;0",
 									"left": 80,
-									"top": 223,
+									"top": 208,
 									"width": 149.80712890625,
 									"height": 53
 								},
@@ -4927,19 +4909,12 @@
 						},
 						{
 							"_type": "UMLAttribute",
-							"_id": "AAAAAAGc6Rw/gmCrT/g=",
-							"_parent": {
-								"$ref": "AAAAAAGc6PnxFTkONLQ="
-							},
-							"name": "TiempoDesactivado"
-						},
-						{
-							"_type": "UMLAttribute",
 							"_id": "AAAAAAGc6Sykmnw/ITs=",
 							"_parent": {
 								"$ref": "AAAAAAGc6PnxFTkONLQ="
 							},
-							"name": "IdRol"
+							"name": "IdRol",
+							"type": ""
 						}
 					],
 					"operations": [
