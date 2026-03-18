@@ -79,3 +79,33 @@ CREATE TABLE DetalleVenta(
     PrecioUnitario DECIMAL(10,2) NOT NULL,
     SubTotal AS (Cantidad * PrecioUnitario)
 );
+
+------------------------------------------------------------------------------
+----------PROCEDIMIENTOS ALMACENADOS DE Usuaro
+------------------------------------------------------------------------------
+GO
+CREATE PROC sp_Registro_Usuario
+@NombreUsuario VARCHAR(40),
+@IdRol INT,
+@Documento VARCHAR(20),
+@Telefono VARCHAR(30),
+@Email VARCHAR(50),
+@Contraseña VARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Usuario(Nombre) VALUES
+
+
+
+ 
+
+    IdUsuario INT IDENTITY (1,1) PRIMARY KEY,
+    NombreUsuario VARCHAR(40) NOT NULL,
+    Documento VARCHAR(20) NOT NULL,
+    Telefono VARCHAR(30),
+    Email VARCHAR(50) UNIQUE NOT NULL,
+    Contraseña VARCHAR(100) NOT NULL, 
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+    Estado BIT DEFAULT 1,
+    IdRol INT NOT NULL FOREIGN KEY REFERENCES Rol(IdRol)
