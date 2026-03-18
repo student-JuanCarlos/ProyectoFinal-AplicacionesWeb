@@ -81,7 +81,7 @@ CREATE TABLE Venta(
     TelefonoCliente VARCHAR(20),
     FechaVenta DATETIME DEFAULT GETDATE(),
     MetodoPago VARCHAR(30),
-    Total DECIMAL(12,2) NOT NULL
+    Total DECIMAL(12,2) NOT NULL,
     IdUsuario INT NOT NULL FOREIGN KEY REFERENCES Usuario(IdUsuario)
 );
 
