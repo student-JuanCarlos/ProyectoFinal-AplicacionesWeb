@@ -29,6 +29,7 @@ CREATE TABLE Proveedor(
 CREATE TABLE Usuario(
     IdUsuario INT IDENTITY (1,1) PRIMARY KEY,
     NombreUsuario VARCHAR(40) NOT NULL,
+    Fotografia VARCHAR(100) NULL,
     Documento VARCHAR(20) NOT NULL,
     Telefono VARCHAR(30),
     Email VARCHAR(50) UNIQUE NOT NULL,
@@ -41,6 +42,7 @@ CREATE TABLE Usuario(
 CREATE TABLE Producto(
     IdProducto INT IDENTITY(1,1) PRIMARY KEY,
     NombreProducto VARCHAR(100) NOT NULL,
+    Fotografia VARCHAR(100) NOT NULL,
     Codigo VARCHAR(20) UNIQUE NOT NULL,
     CostoObtenido DECIMAL(10,2) NOT NULL,
     PrecioVendido DECIMAL(10,2) NOT NULL,

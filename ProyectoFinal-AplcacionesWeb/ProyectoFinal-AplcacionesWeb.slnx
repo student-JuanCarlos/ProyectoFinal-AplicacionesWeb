@@ -2,5 +2,5 @@
   <Project Path="CapaDatos/CapaDatos.csproj" />
   <Project Path="CapaEntidad/CapaEntidad.csproj" />
   <Project Path="CapaNegocio/CapaNegocio.csproj" />
-  <Project Path="ProyectoFinal-AplcacionesWeb/ProyectoFinal-AplcacionesWeb.csproj" />
+  <Project Path="ProyectoFinal-AplcacionesWeb/ProyectoFinal-AplcacionesWeb.csproj" Id="0adea950-47c3-42de-b01c-1cc5bbf9aaf1" />
 </Solution>
