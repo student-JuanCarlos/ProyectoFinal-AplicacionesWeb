@@ -17,7 +17,9 @@ namespace CapaEntidad
 
         public string Motivo { get; set; }
 
-        public string IdUsuario { get; set; }
+        public DateTime FechaMovimiento { get; set; }
+
+        public int IdUsuario { get; set; }
 
         public Producto producto { get; set; }
 

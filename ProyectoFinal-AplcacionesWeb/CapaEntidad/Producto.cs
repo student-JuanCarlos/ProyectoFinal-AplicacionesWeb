@@ -19,7 +19,7 @@ namespace CapaEntidad
 
         public int IdProveedor { get; set; }
 
-        public decimal CostoObntenido { get; set; }
+        public decimal CostoObtenido { get; set; }
 
         public decimal PrecioVendido { get; set; }
 
