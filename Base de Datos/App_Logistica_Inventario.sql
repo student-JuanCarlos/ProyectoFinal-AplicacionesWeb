@@ -33,9 +33,9 @@ CREATE TABLE Proveedor(
     Telefono VARCHAR(20),
     PaginaWeb VARCHAR(100),
     EmailEmpresa VARCHAR(100),
+    ProductoOfrecido VARCHAR(100),
     Estado BIT DEFAULT 1
 );
-
 
 -- TABLAS DEPENDIENTES
 CREATE TABLE Usuario(
@@ -711,3 +711,5 @@ BEGIN
     SET Estado = CASE WHEN Estado = 1 THEN 0 ELSE 1 END
     WHERE IdProveedor = @IdProveedor
 END
+
+
