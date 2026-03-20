@@ -11,8 +11,6 @@ namespace CapaEntidad
 
         public string NombreUsuario { get; set; }
 
-        public string Fotografia { get; set; }
-
         public int IdRol { get; set; }
 
         public string Documento { get; set; }
@@ -27,6 +25,11 @@ namespace CapaEntidad
 
         public bool Estado { get; set; }
 
+
+
         public Rol rol { get; set; }
+
+
+
     }
 }

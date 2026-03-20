@@ -12,5 +12,7 @@ namespace CapaEntidad
         public string NombreCategoria { get; set; }
 
         public string Descripcion { get; set; }
+
+        
     }
 }
