@@ -21,5 +21,13 @@ namespace CapaEntidad
 
         public decimal Total { get; set; }
 
+        public bool Estado { get; set; }
+
+        public int IdUsuario { get; set; }
+
+        public Usuario usuario { get; set; }
+
+        public List<DetalleVenta> Detalles { get; set; }
+
     }
 }

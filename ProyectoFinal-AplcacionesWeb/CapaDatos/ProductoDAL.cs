@@ -82,7 +82,7 @@ namespace CapaDatos
                     cmd.Connection = cn;
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "sp_Listado_Producto";
-                    cmd.Parameters.AddWithValue("@Busqueda", Busqueda);
+                    cmd.Parameters.AddWithValue("@Busqueda", string.IsNullOrEmpty(Busqueda) ? (object)DBNull.Value : Busqueda);
                     cn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())

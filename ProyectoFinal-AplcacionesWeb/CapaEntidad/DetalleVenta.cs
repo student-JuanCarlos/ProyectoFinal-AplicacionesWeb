@@ -19,8 +19,6 @@ namespace CapaEntidad
 
         public decimal SubTotal { get; set; }
 
-        public Venta venta { get; set; }
-
         public Producto producto { get; set; }
     }
 }
