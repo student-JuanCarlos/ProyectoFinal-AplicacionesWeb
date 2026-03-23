@@ -9,7 +9,7 @@ namespace CapaEntidad
 
         public int IdProveedor { get; set; }
 
-        public string NombrProveedor { get; set; }
+        public string NombreProveedor { get; set; }
 
         public string RUC { get; set; }
 

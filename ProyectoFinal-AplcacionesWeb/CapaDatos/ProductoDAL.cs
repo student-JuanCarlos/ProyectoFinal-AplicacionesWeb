@@ -136,7 +136,7 @@ namespace CapaDatos
 
                         Proveedor proveedor = new Proveedor
                         {
-                            NombrProveedor = reader["NombreProveedor"].ToString()
+                            NombreProveedor = reader["NombreProveedor"].ToString()
                         };
 
                         producto = new Producto
