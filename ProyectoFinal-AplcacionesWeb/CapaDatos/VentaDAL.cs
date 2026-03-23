@@ -52,47 +52,6 @@ namespace CapaDatos
             return f;
         }
 
-        public List<Venta> ListadoVenta()
-        {
-            List<Venta> listadoVentas = new List<Venta>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
-            {
-                try
-                {
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = cn;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "sp_Listado_Ventas";
-                    cn.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        Usuario usuario = new Usuario()
-                        {
-                            NombreUsuario = reader["NombreUsuario"].ToString()
-                        };
-
-                        DateTime fechaVenta = Convert.ToDateTime(reader["FechaVenta"]);
-
-                        listadoVentas.Add(new Venta
-                        {
-                            IdVenta = Convert.ToInt32(reader["IdVenta"]),
-                            Cliente = reader["Cliente"].ToString(),
-                            FechaVenta = fechaVenta,
-                            Total = Convert.ToDecimal(reader["Total"]),
-                            Estado = Convert.ToBoolean(reader["Estado"]),
-                            usuario = usuario
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
-            return listadoVentas;
-        }
-
         public Venta DetalleVenta(int id)
         {
             Venta venta = null;
@@ -181,7 +140,7 @@ namespace CapaDatos
             return f;
         }
 
-        public List<Venta> ListadoVentaConFiltro(string Busqueda, string NombreUsuario)
+        public List<Venta> ListadoVentaConFiltro(string Busqueda, string NombreUsuario, bool? Estado)
         {
             List<Venta> listadoVentas = new List<Venta>();
             using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
@@ -194,6 +153,7 @@ namespace CapaDatos
                     cmd.CommandText = "sp_Filtrar_Ventas";
                     cmd.Parameters.AddWithValue("@Busqueda", string.IsNullOrEmpty(Busqueda) ? (object)DBNull.Value : Busqueda);
                     cmd.Parameters.AddWithValue("@NombreUsuario", string.IsNullOrEmpty(NombreUsuario) ? (object)DBNull.Value : NombreUsuario);
+                    cmd.Parameters.AddWithValue("@Estado", Estado == null ? (object)DBNull.Value : Estado);
                     cn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())

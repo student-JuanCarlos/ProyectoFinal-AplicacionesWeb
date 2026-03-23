@@ -13,7 +13,7 @@ GO
 
 USE App_Logistica_Inventario;
 GO
-
+SELECT * FROM Venta
 -- TABLAS SIN DEPENDENCIAS
 CREATE TABLE Rol(
     IdRol INT IDENTITY(1,1) PRIMARY KEY,
@@ -85,7 +85,6 @@ CREATE TABLE Venta(
     Estado BIT DEFAULT 1,
     IdUsuario INT NOT NULL FOREIGN KEY REFERENCES Usuario(IdUsuario)
 );
-
 
 CREATE TABLE DetalleVenta(
     IdDetalleVenta INT IDENTITY(1,1) PRIMARY KEY,
@@ -476,24 +475,6 @@ BEGIN
     END CATCH
 END
 
-
-GO
-CREATE PROC sp_Listado_Ventas
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT
-    v.IdVenta,
-    v.Cliente,
-    v.FechaVenta,
-    v.Total,
-    v.Estado,
-    u.NombreUsuario
-    FROM Venta v
-    INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
-    ORDER BY v.FechaVenta DESC
-END
-
 GO
 CREATE PROC sp_Detalle_Venta
 @IdVenta INT
@@ -566,7 +547,8 @@ END
 GO
 CREATE PROC sp_Filtrar_Ventas
 @Busqueda VARCHAR(100) = NULL,
-@NombreUsuario VARCHAR(40) = NULL
+@NombreUsuario VARCHAR(40) = NULL,
+@Estado BIT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -581,10 +563,9 @@ BEGIN
     INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
     WHERE (@Busqueda IS NULL OR v.Cliente LIKE '%' + @Busqueda + '%')
     AND (@NombreUsuario IS NULL OR u.NombreUsuario LIKE '%' + @NombreUsuario + '%')
-    AND v.Estado = 1
+    AND (@Estado IS NULL OR v.Estado = @Estado)
     ORDER BY v.FechaVenta DESC
 END
-
 
 GO
 ------------------------------------------------------------------------------
