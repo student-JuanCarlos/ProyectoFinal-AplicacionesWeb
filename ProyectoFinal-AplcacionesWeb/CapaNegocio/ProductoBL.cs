@@ -13,7 +13,7 @@ namespace CapaNegocio
 
         public int GestionarProducto(Producto producto)
         {
-            if (producto.IdProducto == null)
+            if (producto.IdProducto == 0)
                 return productoDAL.InsertarProducto(producto);
             else
                 return productoDAL.ActualizarProducto(producto);

@@ -16,7 +16,7 @@ namespace CapaNegocio
             if (proveedor.IdProveedor == 0)
                 return proveedorDAL.InsertarProveedor(proveedor);
             else
-                return proveedorDAL.ActualizarProveedor(proveedor)
+                return proveedorDAL.ActualizarProveedor(proveedor);
         }
 
         public List<Proveedor> ListadoProveedor(string Busqueda)

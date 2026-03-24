@@ -13,7 +13,7 @@ namespace CapaNegocio
 
         public int GestionarUsuario(Usuario usuario)
         {
-            if(usuario.IdUsuario == null)
+            if(usuario.IdUsuario == 0)
                 return usuarioDAL.RegistroUsuario(usuario);
             else
                 return usuarioDAL.ActualizarUsuario(usuario);
