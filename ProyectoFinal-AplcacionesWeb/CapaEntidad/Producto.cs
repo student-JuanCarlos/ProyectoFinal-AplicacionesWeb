@@ -29,6 +29,8 @@ namespace CapaEntidad
 
         public bool Estado { get; set; }
 
+        public int TotalVendido { get; set; }
+
         public Categoria categoria { get; set; }
 
         public Proveedor proveedor { get; set; }

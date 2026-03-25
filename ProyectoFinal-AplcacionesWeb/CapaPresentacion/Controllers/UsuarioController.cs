@@ -1,4 +1,5 @@
-﻿using CapaEntidad;
+﻿using CapaDatos;
+using CapaEntidad;
 using CapaNegocio;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ namespace CapaPresentacion.Controllers
     {
 
         UsuarioBL usuarioBL = new UsuarioBL();
+        DashboardBL dashboardBL = new DashboardBL();
 
         [HttpGet]
         public IActionResult Index(string Busqueda)
@@ -110,9 +112,15 @@ namespace CapaPresentacion.Controllers
         public IActionResult InicioAdministrador()
         {
             if (HttpContext.Session.GetString("Usuario") == null)
-            {
                 return RedirectToAction("Login", "Usuario");
-            }
+
+            var (TotalVentas, TotalIngresos) = dashboardBL.VentasHoy();
+
+            ViewBag.TotalVentas = TotalVentas;
+            ViewBag.TotalIngresos = TotalIngresos;
+            ViewBag.ProductosBajoStock = dashboardBL.ProductosBajoStock();
+            ViewBag.ProductosMasVendidos = dashboardBL.ProductosMasVendidos();
+            ViewBag.UltimasVentas = dashboardBL.UltimasVentas();
 
             return View();
         }

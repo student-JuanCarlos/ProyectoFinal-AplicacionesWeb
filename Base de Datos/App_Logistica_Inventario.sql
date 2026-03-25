@@ -13,7 +13,7 @@ GO
 
 USE App_Logistica_Inventario;
 GO
-SELECT * FROM Venta
+
 -- TABLAS SIN DEPENDENCIAS
 CREATE TABLE Rol(
     IdRol INT IDENTITY(1,1) PRIMARY KEY,
@@ -693,4 +693,89 @@ BEGIN
     WHERE IdProveedor = @IdProveedor
 END
 
+------------------------------------------------------------------------------
+----------PROCEDIMIENTOS ALMACENADOS del InicioAdministrador
+------------------------------------------------------------------------------
+GO
+CREATE PROC sp_VentasHoy
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+    COUNT(*) AS TotalVentas,
+    ISNULL(SUM(Total), 0) AS TotalIngresos
+    FROM Venta
+    WHERE CAST(FechaVenta AS DATE) = CAST(GETDATE() AS DATE)
+    AND Estado = 1
+END
+
+
+GO
+CREATE PROC sp_ProductosBajoStock
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+    p.IdProducto,
+    p.NombreProducto,
+    p.StockActual,
+    p.StockMinimo,
+    c.NombreCategoria
+    FROM Producto p
+    INNER JOIN Categoria c ON p.IdCategoria = c.IdCategoria
+    WHERE p.StockActual <= p.StockMinimo
+    AND p.Estado = 1
+    ORDER BY p.StockActual ASC
+END
+
+
+GO
+CREATE PROC sp_ProductosMasVendidos
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 5
+    p.NombreProducto,
+    SUM(dv.Cantidad) AS TotalVendido
+    FROM DetalleVenta dv
+    INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+    INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
+    WHERE v.Estado = 1
+    GROUP BY p.NombreProducto
+    ORDER BY TotalVendido DESC
+END
+
+
+GO
+CREATE PROC sp_UltimasVentas
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 5
+    v.IdVenta,
+    v.Cliente,
+    v.FechaVenta,
+    v.Total,
+    u.NombreUsuario
+    FROM Venta v
+    INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
+    WHERE v.Estado = 1
+    ORDER BY v.FechaVenta DESC
+END
+
+GO
+
+------------------------------------------------------------------------------
+----------SELECTS PRINCIPALES
+------------------------------------------------------------------------------
+SELECT * FROM Venta
+SELECT * FROM Producto
+SELECT * FROM Usuario
+SELECT * FROM MovimientosStock
+
+
+--------------------------INSERCIONES----------------------------------------
+INSERT INTO Rol(NombreRol) VALUES('SuperUser')
+INSERT INTO Rol(NombreRol) VALUES('Administrador')
+INSERT INTO Rol(NombreRol) VALUES('Trabajador')
 
