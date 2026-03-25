@@ -38,6 +38,16 @@ namespace CapaPresentacion.Controllers
 
             try
             {
+
+                if (producto.IdProducto == 0)
+                {
+                    var categoria = categoriaBL.ListadoCategoria(null)
+                        .FirstOrDefault(c => c.IdCategoria == producto.IdCategoria);
+
+                    string prefijo = categoria.NombreCategoria.Substring(0, 3).ToUpper();
+                    producto.Codigo = $"{prefijo}-{Guid.NewGuid().ToString().Substring(0, 6).ToUpper()}";
+                }
+
                 productoBL.GestionarProducto(producto);
             }
             catch(Exception ex)
