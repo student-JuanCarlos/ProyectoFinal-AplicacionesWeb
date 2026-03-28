@@ -12,7 +12,7 @@ namespace CapaPresentacion.Controllers
         [HttpGet]
         public IActionResult Index(string Busqueda)
         {
-            if(HttpContext.Session.GetString("Usuario") == null)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Login", "Usuario");
             }

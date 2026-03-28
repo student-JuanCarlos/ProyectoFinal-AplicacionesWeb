@@ -11,7 +11,7 @@ namespace CapaPresentacion.Controllers
         [HttpGet]
         public IActionResult Index(string Busqueda)
         {
-            if(HttpContext.Session.GetString("Usuario") == null)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Login", "Usuario");
             }
@@ -58,16 +58,10 @@ namespace CapaPresentacion.Controllers
             return Json(new { resultado, mensaje });
         }
 
-        [HttpGet]
         public IActionResult DetalleProveedor(int id)
         {
-            if(HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Login", "Usuario");
-            }
-
             var proveedorBuscado = proveedorBL.DetalleProveedor(id);
-            return View(proveedorBuscado);
+            return Json(proveedorBuscado);
         }
     }
 }

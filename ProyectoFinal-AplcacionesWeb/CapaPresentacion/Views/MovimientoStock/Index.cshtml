@@ -1,0 +1,272 @@
+﻿@model IEnumerable<CapaEntidad.MovimientoStock>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movimientos de Stock</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; min-height: 100vh; background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+
+        #sidebar {
+            width: 250px; min-height: 100vh; background: #000; color: #fff;
+            display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        .sidebar-brand { padding: 1.5rem 1.25rem; border-bottom: 1px solid #222; }
+        .sidebar-brand h5 { font-size: 14px; font-weight: 600; color: #fff; margin: 0; line-height: 1.4; }
+        .sidebar-brand small { font-size: 11px; color: #888; }
+        .sidebar-section { padding: 1rem 1.25rem 0.25rem; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-nav { flex: 1; padding: 0.5rem 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 0.6rem 1.25rem; color: #aaa; text-decoration: none; font-size: 14px; transition: all 0.2s; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: #111; }
+        .sidebar-nav a.active { border-left: 3px solid #fff; }
+        .sidebar-nav a i { font-size: 16px; }
+        .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid #222; }
+        .sidebar-footer a { display: flex; align-items: center; gap: 10px; color: #aaa; text-decoration: none; font-size: 14px; }
+        .sidebar-footer a:hover { color: #fff; }
+
+        #main { margin-left: 250px; flex: 1; padding: 2rem; }
+
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .page-title { font-size: 22px; font-weight: 700; color: #111; margin: 0; }
+        .page-subtitle { font-size: 13px; color: #888; margin-top: 2px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+        .btn-nuevo {
+            background: #000; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: background 0.2s;
+        }
+        .btn-nuevo:hover { background: #222; }
+
+        .search-input, .filter-select {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 14px;
+            font-size: 0.875rem; color: #111; transition: border-color 0.2s;
+        }
+        .search-input { width: 200px; }
+        .filter-select { width: 150px; }
+        .search-input:focus, .filter-select:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .card-tabla { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
+
+        .tabla-movimientos { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .tabla-movimientos thead tr { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+        .tabla-movimientos thead th { padding: 12px 16px; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+        .tabla-movimientos tbody tr { border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+        .tabla-movimientos tbody tr:last-child { border-bottom: none; }
+        .tabla-movimientos tbody tr:hover { background: #f9fafb; }
+        .tabla-movimientos td { padding: 14px 16px; color: #374151; vertical-align: middle; }
+
+        .badge-entrada { background: #d1fae5; color: #065f46; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; }
+        .badge-salida  { background: #fee2e2; color: #991b1b; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; }
+
+        .producto-info { font-weight: 600; color: #111; }
+        .producto-codigo { font-size: 0.75rem; color: #9ca3af; font-family: monospace; }
+
+        .empty-state { text-align: center; padding: 48px 0; color: #9ca3af; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+
+        .modal-content { border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .modal-header { border-bottom: 1px solid #f3f4f6; padding: 20px 24px 16px; }
+        .modal-title { font-size: 1rem; font-weight: 700; color: #111; }
+        .modal-body { padding: 20px 24px; }
+        .modal-footer { border-top: 1px solid #f3f4f6; padding: 16px 24px; }
+
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 4px; }
+        .form-control, .form-select {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 12px;
+            font-size: 0.875rem; color: #111; width: 100%; transition: border-color 0.2s;
+        }
+        .form-control:focus, .form-select:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .btn-cancelar { background: #f3f4f6; color: #374151; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+        .btn-guardar { background: #000; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-guardar:hover { background: #222; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="sidebar-brand">
+        <h5>Sistema de Inventario<br />y Ventas</h5>
+        <small>Panel de control</small>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="/Usuario/InicioAdministrador"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <div class="sidebar-section">Gestión</div>
+        <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+        <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
+        <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+        <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+        <div class="sidebar-section">Inventario & Ventas</div>
+        <a href="/MovimientoStock/Index" class="active"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        <a href="/Venta/Index"><i class="bi bi-receipt"></i> Ventas</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a asp-action="CerrarSesion" asp-controller="Usuario"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+    </div>
+</div>
+
+<div id="main">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Movimientos de Stock</h1>
+            <p class="page-subtitle">Registro de entradas y salidas de inventario</p>
+        </div>
+        <div class="header-actions">
+            <form method="get" asp-action="Index" asp-controller="MovimientoStock" class="d-flex gap-2">
+                <select name="TipoDeMovimiento" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="ENTRADA" @(Context.Request.Query["TipoDeMovimiento"] == "ENTRADA" ? "selected" : "")>Entrada</option>
+                    <option value="SALIDA" @(Context.Request.Query["TipoDeMovimiento"] == "SALIDA" ? "selected" : "")>Salida</option>
+                </select>
+                <input type="text" name="Busqueda" value="@Context.Request.Query["Busqueda"]"
+                       class="search-input" placeholder="Buscar producto..." />
+                <button type="submit" class="btn-nuevo"><i class="bi bi-search"></i></button>
+            </form>
+            <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                <i class="bi bi-plus-lg"></i> Nuevo Movimiento
+            </button>
+        </div>
+    </div>
+
+    <div class="card-tabla">
+        <table class="tabla-movimientos">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="bi bi-arrow-left-right"></i>
+                                No se encontraron movimientos
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="color:#9ca3af; font-size:0.82rem;">@item.IdMovimiento</td>
+                            <td>
+                                <span class="@(item.TipoDeMovimiento == "ENTRADA" ? "badge-entrada" : "badge-salida")">
+                                    @item.TipoDeMovimiento
+                                </span>
+                            </td>
+                            <td>
+                                <div class="producto-info">@item.producto?.NombreProducto</div>
+                                <div class="producto-codigo">@item.producto?.Codigo</div>
+                            </td>
+                            <td style="font-weight:600;">@item.Cantidad</td>
+                            <td>@(string.IsNullOrEmpty(item.Motivo) ? "—" : item.Motivo)</td>
+                            <td>@item.usuario?.NombreUsuario</td>
+                            <td>@item.FechaMovimiento.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("es-PE"))</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Create -->
+<div class="modal fade" id="modalCreate" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Movimiento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCreate">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Movimiento</label>
+                        <select name="TipoDeMovimiento" class="form-select" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="ENTRADA">ENTRADA</option>
+                            <option value="SALIDA">SALIDA</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Producto</label>
+                        <select name="IdProducto" class="form-select" required>
+                            <option value="">Seleccionar...</option>
+                            @foreach (var prod in ViewBag.Productos)
+                            {
+                                <option value="@prod.IdProducto">@prod.NombreProducto</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" name="Cantidad" class="form-control" min="1" required />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Usuario</label>
+                            <select name="IdUsuario" class="form-select" required>
+                                <option value="">Seleccionar...</option>
+                                @foreach (var usr in ViewBag.Usuarios)
+                                {
+                                    <option value="@usr.IdUsuario">@usr.NombreUsuario</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motivo</label>
+                        <textarea name="Motivo" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn-guardar" onclick="guardarMovimiento()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function guardarMovimiento() {
+        const form = document.getElementById('formCreate');
+        const formData = new FormData(form);
+
+        fetch('/MovimientoStock/GuardarMovimiento', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.resultado) location.reload();
+            else alert(result.mensaje);
+        });
+    }
+</script>
+</body>
+</html>

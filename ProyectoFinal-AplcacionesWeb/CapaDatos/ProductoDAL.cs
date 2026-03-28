@@ -131,11 +131,13 @@ namespace CapaDatos
                     {
                         Categoria categoria = new Categoria
                         {
+                            IdCategoria = Convert.ToInt32(reader["IdCategoria"]),
                             NombreCategoria = reader["NombreCategoria"].ToString()
                         };
 
                         Proveedor proveedor = new Proveedor
                         {
+                            IdProveedor = Convert.ToInt32(reader["IdProveedor"]),
                             NombreProveedor = reader["NombreProveedor"].ToString()
                         };
 
@@ -146,6 +148,8 @@ namespace CapaDatos
                             Fotografia = reader["Fotografia"].ToString(),
                             categoria = categoria,
                             Codigo = reader["Codigo"].ToString(),
+                            IdCategoria = Convert.ToInt32(reader["IdCategoria"]),
+                            IdProveedor = Convert.ToInt32(reader["IdProveedor"]),
                             CostoObtenido = Convert.ToDecimal(reader["CostoObtenido"]),
                             PrecioVendido = Convert.ToDecimal(reader["PrecioVendido"]),
                             proveedor = proveedor,

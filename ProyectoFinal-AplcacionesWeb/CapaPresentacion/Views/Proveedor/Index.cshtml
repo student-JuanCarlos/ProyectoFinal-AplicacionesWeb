@@ -1,0 +1,392 @@
+﻿@model IEnumerable<CapaEntidad.Proveedor>
+@Html.AntiForgeryToken()
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proveedores</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; min-height: 100vh; background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+
+        #sidebar {
+            width: 250px; min-height: 100vh; background: #000; color: #fff;
+            display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        .sidebar-brand { padding: 1.5rem 1.25rem; border-bottom: 1px solid #222; }
+        .sidebar-brand h5 { font-size: 14px; font-weight: 600; color: #fff; margin: 0; line-height: 1.4; }
+        .sidebar-brand small { font-size: 11px; color: #888; }
+        .sidebar-section { padding: 1rem 1.25rem 0.25rem; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-nav { flex: 1; padding: 0.5rem 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 0.6rem 1.25rem; color: #aaa; text-decoration: none; font-size: 14px; transition: all 0.2s; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: #111; }
+        .sidebar-nav a.active { border-left: 3px solid #fff; }
+        .sidebar-nav a i { font-size: 16px; }
+        .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid #222; }
+        .sidebar-footer a { display: flex; align-items: center; gap: 10px; color: #aaa; text-decoration: none; font-size: 14px; }
+        .sidebar-footer a:hover { color: #fff; }
+
+        #main { margin-left: 250px; flex: 1; padding: 2rem; }
+
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .page-title { font-size: 22px; font-weight: 700; color: #111; margin: 0; }
+        .page-subtitle { font-size: 13px; color: #888; margin-top: 2px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
+        .btn-nuevo {
+            background: #000; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: background 0.2s;
+        }
+        .btn-nuevo:hover { background: #222; }
+
+        .search-input {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 14px;
+            font-size: 0.875rem; color: #111; width: 240px; transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+
+        .proveedor-card {
+            background: #fff; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .proveedor-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+        .card-top { padding: 20px 20px 16px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #f3f4f6; }
+        .avatar {
+            width: 48px; height: 48px; border-radius: 12px; background: #000; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 700; flex-shrink: 0;
+        }
+        .proveedor-nombre { font-weight: 700; color: #111; font-size: 0.95rem; }
+        .proveedor-ruc { font-size: 0.78rem; color: #9ca3af; margin-top: 2px; }
+
+        .card-body { padding: 14px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .card-info-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; }
+        .card-info-label { color: #9ca3af; font-weight: 500; }
+        .card-info-value { color: #374151; font-weight: 600; }
+
+        .card-info-link { color: #1d4ed8; font-weight: 600; text-decoration: none; font-size: 0.82rem; }
+        .card-info-link:hover { text-decoration: underline; }
+
+        .badge-estado { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; }
+        .badge-estado.activo   { background: #d1fae5; color: #065f46; }
+        .badge-estado.inactivo { background: #fee2e2; color: #991b1b; }
+        .badge-estado::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        .card-footer-acciones { padding: 12px 20px; border-top: 1px solid #f3f4f6; display: flex; gap: 8px; }
+        .btn-accion { border: none; padding: 7px 0; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; flex: 1; text-align: center; }
+        .btn-accion:hover { opacity: 0.8; }
+        .btn-detalle    { background: #f3f4f6; color: #374151; }
+        .btn-edit       { background: #dbeafe; color: #1d4ed8; }
+        .btn-activar    { background: #d1fae5; color: #065f46; }
+        .btn-desactivar { background: #fee2e2; color: #991b1b; }
+
+        .modal-content { border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .modal-header { border-bottom: 1px solid #f3f4f6; padding: 20px 24px 16px; }
+        .modal-title { font-size: 1rem; font-weight: 700; color: #111; }
+        .modal-body { padding: 20px 24px; }
+        .modal-footer { border-top: 1px solid #f3f4f6; padding: 16px 24px; }
+
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 4px; }
+        .form-control {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 12px;
+            font-size: 0.875rem; color: #111; width: 100%; transition: border-color 0.2s;
+        }
+        .form-control:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .btn-cancelar { background: #f3f4f6; color: #374151; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+        .btn-guardar { background: #000; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-guardar:hover { background: #222; }
+
+        .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .detalle-item label { font-size: 0.72rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 3px; }
+        .detalle-item span { font-size: 0.9rem; color: #111; font-weight: 500; }
+
+        .empty-state { text-align: center; padding: 48px 0; color: #9ca3af; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="sidebar-brand">
+        <h5>Sistema de Inventario<br />y Ventas</h5>
+        <small>Panel de control</small>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="/Usuario/InicioAdministrador"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <div class="sidebar-section">Gestión</div>
+        <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+        <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
+        <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+        <a href="/Proveedor/Index" class="active"><i class="bi bi-truck"></i> Proveedores</a>
+        <div class="sidebar-section">Inventario & Ventas</div>
+        <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        <a href="/Venta/Index"><i class="bi bi-receipt"></i> Ventas</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a asp-action="CerrarSesion" asp-controller="Usuario"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+    </div>
+</div>
+
+<div id="main">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Proveedores</h1>
+            <p class="page-subtitle">Gestión de proveedores</p>
+        </div>
+        <div class="header-actions">
+            <form method="get" asp-action="Index" asp-controller="Proveedor" class="d-flex gap-2">
+                <input type="text" name="Busqueda" value="@Context.Request.Query["Busqueda"]"
+                       class="search-input" placeholder="Buscar proveedor..." />
+                <button type="submit" class="btn-nuevo"><i class="bi bi-search"></i></button>
+            </form>
+            <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                <i class="bi bi-plus-lg"></i> Nuevo Proveedor
+            </button>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-truck"></i>
+            No se encontraron proveedores
+        </div>
+    }
+    else
+    {
+        <div class="cards-grid">
+            @foreach (var item in Model)
+            {
+                <div class="proveedor-card">
+                    <div class="card-top">
+                        <div class="avatar">@item.NombreProveedor.Substring(0, 1).ToUpper()</div>
+                        <div>
+                            <div class="proveedor-nombre">@item.NombreProveedor</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-info-row">
+                            <span class="card-info-label">Teléfono</span>
+                            <span class="card-info-value">@(string.IsNullOrEmpty(item.Telefono) ? "—" : item.Telefono)</span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-info-label">Email</span>
+                            <span class="card-info-value">@(string.IsNullOrEmpty(item.EmailEmpresa) ? "—" : item.EmailEmpresa)</span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-info-label">Estado</span>
+                            <span class="badge-estado @(item.Estado ? "activo" : "inactivo")">
+                                @(item.Estado ? "Activo" : "Inactivo")
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer-acciones">
+                        <button class="btn-accion btn-detalle"
+                                onclick="abrirDetalle(@item.IdProveedor)"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDetalle">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                        <button class="btn-accion btn-edit"
+                                onclick="abrirEdit(@item.IdProveedor)"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEdit">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                        <button class="btn-accion @(item.Estado ? "btn-desactivar" : "btn-activar")"
+                                onclick="cambiarEstado(@item.IdProveedor)">
+                            @(item.Estado ? "Desactivar" : "Activar")
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Modal Create -->
+<div class="modal fade" id="modalCreate" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCreate">
+                    <input type="hidden" name="IdProveedor" value="0" />
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Proveedor</label>
+                        <input type="text" name="NombreProveedor" class="form-control" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">RUC</label>
+                            <input type="text" name="RUC" class="form-control" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" name="Telefono" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Empresa</label>
+                        <input type="email" name="EmailEmpresa" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Página Web</label>
+                        <input type="text" name="PaginaWeb" class="form-control" placeholder="https://..." />
+                    </div>
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn-guardar" onclick="guardarProveedor('formCreate')">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detalle -->
+<div class="modal fade" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detalle-grid">
+                    <div class="detalle-item"><label>ID</label><span id="detalle-id"></span></div>
+                    <div class="detalle-item"><label>Nombre</label><span id="detalle-nombre"></span></div>
+                    <div class="detalle-item"><label>RUC</label><span id="detalle-ruc"></span></div>
+                    <div class="detalle-item"><label>Teléfono</label><span id="detalle-telefono"></span></div>
+                    <div class="detalle-item"><label>Email</label><span id="detalle-email"></span></div>
+                    <div class="detalle-item"><label>Página Web</label><span id="detalle-web"></span></div>
+                    <div class="detalle-item"><label>Estado</label><span id="detalle-estado"></span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEdit">
+                    <input type="hidden" id="edit-id" name="IdProveedor" />
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Proveedor</label>
+                        <input type="text" id="edit-nombre" name="NombreProveedor" class="form-control" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">RUC</label>
+                            <input type="text" id="edit-ruc" name="RUC" class="form-control" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" id="edit-telefono" name="Telefono" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Empresa</label>
+                        <input type="email" id="edit-email" name="EmailEmpresa" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Página Web</label>
+                        <input type="text" id="edit-web" name="PaginaWeb" class="form-control" />
+                    </div>
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn-guardar" onclick="guardarProveedor('formEdit')">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function abrirDetalle(id) {
+        fetch(`/Proveedor/DetalleProveedor/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('detalle-id').textContent = data.idProveedor;
+                document.getElementById('detalle-nombre').textContent = data.nombreProveedor;
+                document.getElementById('detalle-ruc').textContent = data.ruc || '—';
+                document.getElementById('detalle-telefono').textContent = data.telefono || '—';
+                document.getElementById('detalle-email').textContent = data.emailEmpresa || '—';
+                document.getElementById('detalle-web').textContent = data.paginaWeb || '—';
+                document.getElementById('detalle-estado').textContent = data.estado ? 'Activo' : 'Inactivo';
+            });
+    }
+
+    function abrirEdit(id) {
+        fetch(`/Proveedor/DetalleProveedor/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('edit-id').value = data.idProveedor;
+                document.getElementById('edit-nombre').value = data.nombreProveedor;
+                document.getElementById('edit-ruc').value = data.ruc;
+                document.getElementById('edit-telefono').value = data.telefono;
+                document.getElementById('edit-email').value = data.emailEmpresa;
+                document.getElementById('edit-web').value = data.paginaWeb;
+            });
+    }
+
+    function guardarProveedor(formId) {
+        const form = document.getElementById(formId);
+        const formData = new FormData(form);
+
+        fetch('/Proveedor/GuardarProveedor', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.resultado) location.reload();
+            else alert(result.mensaje);
+        });
+    }
+
+    function cambiarEstado(id) {
+        fetch(`/Proveedor/CambiarEstadoProveedor/${id}`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.resultado) location.reload();
+            else alert(data.mensaje);
+        });
+    }
+</script>
+</body>
+</html>

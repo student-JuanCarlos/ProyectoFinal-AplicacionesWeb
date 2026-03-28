@@ -8,6 +8,7 @@ namespace CapaPresentacion.Controllers
     {
 
         MovimientoStockBL movimientostockBL = new MovimientoStockBL();
+        ProductoBL productoBL = new ProductoBL();
 
         [HttpGet]
         public IActionResult Index(string TipoDeMovimiento, string Busqueda)
@@ -17,6 +18,7 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
             }
 
+            ViewBag.Productos = productoBL.ListadoProducto(null);
             var listadoMovimientos = movimientostockBL.ListadoMovimiento(TipoDeMovimiento, Busqueda);
             return View(listadoMovimientos);
         }

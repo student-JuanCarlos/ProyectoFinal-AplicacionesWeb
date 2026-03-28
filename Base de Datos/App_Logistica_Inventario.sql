@@ -280,6 +280,8 @@ BEGIN
     p.Fotografia,
     c.NombreCategoria,
     p.Codigo,
+    p.IdCategoria,
+    p.IdProveedor,
     p.CostoObtenido,
     p.PrecioVendido,
     pr.NombreProveedor,
@@ -774,6 +776,7 @@ SELECT * FROM Producto
 SELECT * FROM Usuario
 SELECT * FROM MovimientosStock
 SELECT * FROM Rol
+SELECT * FROM Categoria
 
 --------------------------INSERCIONES----------------------------------------
 INSERT INTO Rol(NombreRol) VALUES('SuperUser')

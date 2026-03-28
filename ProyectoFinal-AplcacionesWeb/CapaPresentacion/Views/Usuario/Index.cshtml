@@ -40,6 +40,9 @@
             margin: 0;
             line-height: 1.4;
         }
+
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
         .sidebar-brand small { font-size: 11px; color: #888; }
         .sidebar-section {
             padding: 1rem 1.25rem 0.25rem;
@@ -321,9 +324,18 @@
             <h1 class="page-title">Usuarios</h1>
             <p class="page-subtitle">Gestión de usuarios del sistema</p>
         </div>
+        <div class="header-actions">
+            <form method="get" asp-action="Index" asp-controller="Usuario" class="d-flex gap-2">
+            <input type="text" name="Busqueda" value="@Context.Request.Query["Busqueda"]" 
+                class="form-control" placeholder="Buscar usuario..." style="max-width: 280px;" />
+            <button type="submit" class="btn-nuevo">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+        </form>
         <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
             <i class="bi bi-plus-lg"></i> Nuevo Usuario
         </button>
+        </div>
     </div>
 
     <div class="cards-grid">
