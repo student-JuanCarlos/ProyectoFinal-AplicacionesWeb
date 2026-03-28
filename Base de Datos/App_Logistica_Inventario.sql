@@ -772,6 +772,7 @@ GO
 ----------SELECTS PRINCIPALES
 ------------------------------------------------------------------------------
 SELECT * FROM Venta
+SELECT * FROM DetalleVenta
 SELECT * FROM Producto
 SELECT * FROM Usuario
 SELECT * FROM MovimientosStock

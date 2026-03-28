@@ -1,0 +1,618 @@
+﻿@model IEnumerable<CapaEntidad.Venta>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ventas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; min-height: 100vh; background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+
+        #sidebar {
+            width: 250px; min-height: 100vh; background: #000; color: #fff;
+            display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        .sidebar-brand { padding: 1.5rem 1.25rem; border-bottom: 1px solid #222; }
+        .sidebar-brand h5 { font-size: 14px; font-weight: 600; color: #fff; margin: 0; line-height: 1.4; }
+        .sidebar-brand small { font-size: 11px; color: #888; }
+        .sidebar-section { padding: 1rem 1.25rem 0.25rem; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-nav { flex: 1; padding: 0.5rem 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 0.6rem 1.25rem; color: #aaa; text-decoration: none; font-size: 14px; transition: all 0.2s; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: #111; }
+        .sidebar-nav a.active { border-left: 3px solid #fff; }
+        .sidebar-nav a i { font-size: 16px; }
+        .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid #222; }
+        .sidebar-footer a { display: flex; align-items: center; gap: 10px; color: #aaa; text-decoration: none; font-size: 14px; }
+        .sidebar-footer a:hover { color: #fff; }
+
+        #main { margin-left: 250px; flex: 1; padding: 2rem; }
+
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .page-title { font-size: 22px; font-weight: 700; color: #111; margin: 0; }
+        .page-subtitle { font-size: 13px; color: #888; margin-top: 2px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+        .btn-nuevo {
+            background: #000; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: background 0.2s;
+        }
+        .btn-nuevo:hover { background: #222; }
+
+        .search-input, .filter-select {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 14px;
+            font-size: 0.875rem; color: #111; transition: border-color 0.2s;
+        }
+        .search-input { width: 180px; }
+        .filter-select { width: 140px; }
+        .search-input:focus, .filter-select:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .card-tabla { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
+
+        .tabla-ventas { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .tabla-ventas thead tr { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+        .tabla-ventas thead th { padding: 12px 16px; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+        .tabla-ventas tbody tr { border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+        .tabla-ventas tbody tr:last-child { border-bottom: none; }
+        .tabla-ventas tbody tr:hover { background: #f9fafb; }
+        .tabla-ventas td { padding: 14px 16px; color: #374151; vertical-align: middle; }
+
+        .cliente-nombre { font-weight: 600; color: #111; }
+
+        .badge-activa  { background: #d1fae5; color: #065f46; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-anulada { background: #fee2e2; color: #991b1b; padding: 3px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-activa::before, .badge-anulada::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        .acciones { display: flex; gap: 6px; }
+        .btn-accion { border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+        .btn-accion:hover { opacity: 0.8; }
+        .btn-detalle  { background: #f3f4f6; color: #374151; }
+        .btn-anular   { background: #fee2e2; color: #991b1b; }
+
+        .empty-state { text-align: center; padding: 48px 0; color: #9ca3af; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+
+        /* Modales */
+        .modal-content { border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .modal-header { border-bottom: 1px solid #f3f4f6; padding: 20px 24px 16px; }
+        .modal-title { font-size: 1rem; font-weight: 700; color: #111; }
+        .modal-body { padding: 20px 24px; }
+        .modal-footer { border-top: 1px solid #f3f4f6; padding: 16px 24px; }
+
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 4px; }
+        .form-control, .form-select {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 12px;
+            font-size: 0.875rem; color: #111; width: 100%; transition: border-color 0.2s;
+        }
+        .form-control:focus, .form-select:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .btn-cancelar { background: #f3f4f6; color: #374151; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+        .btn-guardar  { background: #000; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-guardar:hover { background: #222; }
+
+        /* Tienda */
+        .productos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+        .producto-tile {
+            border: 2px solid #e5e7eb; border-radius: 10px; padding: 12px; cursor: pointer;
+            transition: border-color 0.2s, background 0.2s; text-align: center;
+        }
+        .producto-tile:hover { border-color: #000; background: #f9fafb; }
+        .producto-tile.seleccionado { border-color: #000; background: #f0fdf4; }
+        .producto-tile img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
+        .producto-tile-nombre { font-size: 0.8rem; font-weight: 600; color: #111; }
+        .producto-tile-precio { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+        .producto-tile-stock { font-size: 0.72rem; margin-top: 4px; }
+        .stock-ok  { color: #065f46; }
+        .stock-low { color: #991b1b; }
+
+        /* Carrito */
+        .carrito-tabla { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 16px; }
+        .carrito-tabla thead th { padding: 8px 10px; text-align: left; font-size: 0.72rem; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
+        .carrito-tabla tbody td { padding: 8px 10px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        .carrito-tabla tbody tr:last-child td { border-bottom: none; }
+
+        .cantidad-input { width: 60px; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 8px; font-size: 0.82rem; text-align: center; }
+        .btn-quitar { background: #fee2e2; color: #991b1b; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
+
+        .total-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 0; border-top: 2px solid #e5e7eb; margin-top: 8px; }
+        .total-label { font-size: 0.9rem; font-weight: 600; color: #374151; }
+        .total-valor { font-size: 1.2rem; font-weight: 700; color: #111; }
+
+        /* Detalle venta modal */
+        .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+        .detalle-item label { font-size: 0.72rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 3px; }
+        .detalle-item span { font-size: 0.88rem; color: #111; font-weight: 500; }
+
+        .detalle-productos-tabla { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .detalle-productos-tabla thead th { padding: 8px 10px; text-align: left; font-size: 0.72rem; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
+        .detalle-productos-tabla tbody td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
+        .detalle-productos-tabla tbody tr:last-child td { border-bottom: none; }
+
+        .btn-abrir-tienda {
+            background: #f0fdf4; color: #065f46; border: 2px dashed #86efac;
+            border-radius: 8px; padding: 10px; width: 100%; font-size: 0.875rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
+        }
+        .btn-abrir-tienda:hover { background: #dcfce7; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="sidebar-brand">
+        <h5>Sistema de Inventario<br />y Ventas</h5>
+        <small>Panel de control</small>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="/Usuario/InicioAdministrador"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <div class="sidebar-section">Gestión</div>
+        <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+        <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
+        <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+        <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+        <div class="sidebar-section">Inventario & Ventas</div>
+        <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        <a href="/Venta/Index" class="active"><i class="bi bi-receipt"></i> Ventas</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a asp-action="CerrarSesion" asp-controller="Usuario"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+    </div>
+</div>
+
+<div id="main">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Ventas</h1>
+            <p class="page-subtitle">Registro y gestión de ventas</p>
+        </div>
+        <div class="header-actions">
+            <form method="get" asp-action="Index" asp-controller="Venta" class="d-flex gap-2">
+                <input type="text" name="Busqueda" value="@Context.Request.Query["Busqueda"]"
+                       class="search-input" placeholder="Buscar cliente..." />
+                <input type="text" name="NombreUsuario" value="@Context.Request.Query["NombreUsuario"]"
+                       class="search-input" placeholder="Buscar usuario..." />
+                <select name="Estado" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="true"  selected="@(Context.Request.Query["Estado"] == "true")">Activa</option>
+                    <option value="false" selected="@(Context.Request.Query["Estado"] == "false")">Anulada</option>
+                </select>
+                <button type="submit" class="btn-nuevo"><i class="bi bi-search"></i></button>
+            </form>
+            <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                <i class="bi bi-plus-lg"></i> Nueva Venta
+            </button>
+        </div>
+    </div>
+
+    <div class="card-tabla">
+        <table class="tabla-ventas">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Vendedor</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="bi bi-receipt"></i>
+                                No se encontraron ventas
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="color:#9ca3af; font-size:0.82rem;">#@item.IdVenta</td>
+                            <td><div class="cliente-nombre">@item.Cliente</div></td>
+                            <td>@item.usuario?.NombreUsuario</td>
+                            <td>@item.FechaVenta.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("es-PE"))</td>
+                            <td style="font-weight:700;">S/ @item.Total.ToString("0.00")</td>
+                            <td>
+                                <span class="@(item.Estado ? "badge-activa" : "badge-anulada")">
+                                    @(item.Estado ? "Activa" : "Anulada")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="acciones">
+                                    <button class="btn-accion btn-detalle"
+                                            onclick="abrirDetalle(@item.IdVenta)"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalDetalle">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </button>
+                                    @if (item.Estado)
+                                    {
+                                        <button class="btn-accion btn-anular"
+                                                onclick="anularVenta(@item.IdVenta)">
+                                            <i class="bi bi-x-circle"></i> Anular
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Nueva Venta -->
+<div class="modal fade" id="modalCreate" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Venta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="limpiarVenta()"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Datos del cliente -->
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label">Cliente</label>
+                        <input type="text" id="v-cliente" class="form-control" placeholder="Nombre del cliente" />
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Documento</label>
+                        <input type="text" id="v-documento" class="form-control" placeholder="DNI / RUC" />
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" id="v-telefono" class="form-control" placeholder="Opcional" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label">Método de Pago</label>
+                        <select id="v-metodopago" class="form-select">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Yape">Yape</option>
+                            <option value="Plin">Plin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Botón abrir tienda -->
+                <button class="btn-abrir-tienda" onclick="abrirTienda()">
+                    <i class="bi bi-shop"></i> Agregar productos
+                </button>
+
+                <!-- Carrito -->
+                <div id="carrito-container" style="display:none;">
+                    <table class="carrito-tabla">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="carrito-body"></tbody>
+                    </table>
+                    <div class="total-bar">
+                        <span class="total-label">Total</span>
+                        <span class="total-valor" id="carrito-total">S/ 0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" data-bs-dismiss="modal" onclick="limpiarVenta()">Cancelar</button>
+                <button type="button" class="btn-guardar" onclick="guardarVenta()">Confirmar Venta</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tienda -->
+<div class="modal fade" id="modalTienda" tabindex="-1" style="z-index: 1060;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-shop"></i> Seleccionar Productos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="tienda-busqueda" class="form-control mb-3" placeholder="Buscar producto..." oninput="filtrarProductosTienda()" />
+                <div class="productos-grid" id="tienda-grid">
+                    @foreach (var prod in ViewBag.Productos)
+                    {
+                        <div class="producto-tile"
+                             data-id="@prod.IdProducto"
+                             data-nombre="@prod.NombreProducto"
+                             data-precio="@prod.PrecioVendido"
+                             data-stock="@prod.StockActual"
+                             data-foto="@prod.Fotografia"
+                             onclick="seleccionarProducto(this)">
+                            @if (!string.IsNullOrEmpty(prod.Fotografia))
+                            {
+                                <img src="/@prod.Fotografia" alt="@prod.NombreProducto" />
+                            }
+                            else
+                            {
+                                <div style="width:60px;height:60px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#d1d5db;font-size:1.5rem;">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            }
+                            <div class="producto-tile-nombre">@prod.NombreProducto</div>
+                            <div class="producto-tile-precio">S/ @prod.PrecioVendido.ToString("0.00")</div>
+                            <div class="producto-tile-stock @(prod.StockActual <= prod.StockMinimo ? "stock-low" : "stock-ok")">
+                                Stock: @prod.StockActual
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-guardar" data-bs-dismiss="modal">
+                    <i class="bi bi-check-lg"></i> Listo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detalle Venta -->
+<div class="modal fade" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle de Venta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detalle-grid">
+                    <div class="detalle-item"><label>N° Venta</label><span id="d-idventa"></span></div>
+                    <div class="detalle-item"><label>Cliente</label><span id="d-cliente"></span></div>
+                    <div class="detalle-item"><label>Documento</label><span id="d-documento"></span></div>
+                    <div class="detalle-item"><label>Teléfono</label><span id="d-telefono"></span></div>
+                    <div class="detalle-item"><label>Método de Pago</label><span id="d-metodopago"></span></div>
+                    <div class="detalle-item"><label>Vendedor</label><span id="d-usuario"></span></div>
+                    <div class="detalle-item"><label>Fecha</label><span id="d-fecha"></span></div>
+                    <div class="detalle-item"><label>Estado</label><span id="d-estado"></span></div>
+                </div>
+                <table class="detalle-productos-tabla">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="d-detalles"></tbody>
+                </table>
+                <div class="total-bar">
+                    <span class="total-label">Total</span>
+                    <span class="total-valor" id="d-total"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let carrito = [];
+
+    function abrirTienda() {
+        const tienda = new bootstrap.Modal(document.getElementById('modalTienda'));
+        tienda.show();
+        // marcar tiles ya en carrito
+        document.querySelectorAll('.producto-tile').forEach(tile => {
+            const id = parseInt(tile.dataset.id);
+            tile.classList.toggle('seleccionado', carrito.some(c => c.idProducto === id));
+        });
+    }
+
+    function filtrarProductosTienda() {
+        const q = document.getElementById('tienda-busqueda').value.toLowerCase();
+        document.querySelectorAll('.producto-tile').forEach(tile => {
+            tile.style.display = tile.dataset.nombre.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+
+    function seleccionarProducto(tile) {
+        const id = parseInt(tile.dataset.id);
+        const stock = parseInt(tile.dataset.stock);
+
+        if (stock <= 0) { alert('Sin stock disponible'); return; }
+
+        const existe = carrito.findIndex(c => c.idProducto === id);
+        if (existe >= 0) {
+            carrito.splice(existe, 1);
+            tile.classList.remove('seleccionado');
+        } else {
+            carrito.push({
+                idProducto: id,
+                nombreProducto: tile.dataset.nombre,
+                precioUnitario: parseFloat(tile.dataset.precio),
+                cantidad: 1,
+                stockMax: stock
+            });
+            tile.classList.add('seleccionado');
+        }
+        renderCarrito();
+    }
+
+    function renderCarrito() {
+        const tbody = document.getElementById('carrito-body');
+        const container = document.getElementById('carrito-container');
+
+        if (carrito.length === 0) {
+            container.style.display = 'none';
+            tbody.innerHTML = '';
+            actualizarTotal();
+            return;
+        }
+
+        container.style.display = 'block';
+        tbody.innerHTML = '';
+
+        carrito.forEach((item, i) => {
+            const subtotal = (item.precioUnitario * item.cantidad).toFixed(2);
+            tbody.innerHTML += `
+                <tr>
+                    <td style="font-weight:600;">${item.nombreProducto}</td>
+                    <td>S/ ${item.precioUnitario.toFixed(2)}</td>
+                    <td>
+                        <input type="number" class="cantidad-input" min="1" max="${item.stockMax}"
+                               value="${item.cantidad}" onchange="cambiarCantidad(${i}, this.value)" />
+                    </td>
+                    <td style="font-weight:600;">S/ ${subtotal}</td>
+                    <td><button class="btn-quitar" onclick="quitarItem(${i})"><i class="bi bi-trash"></i></button></td>
+                </tr>`;
+        });
+
+        actualizarTotal();
+    }
+
+    function cambiarCantidad(index, valor) {
+        const val = parseInt(valor);
+        if (val < 1) { carrito[index].cantidad = 1; }
+        else if (val > carrito[index].stockMax) { carrito[index].cantidad = carrito[index].stockMax; }
+        else { carrito[index].cantidad = val; }
+        renderCarrito();
+    }
+
+    function quitarItem(index) {
+        const id = carrito[index].idProducto;
+        carrito.splice(index, 1);
+        // desmarcar tile
+        document.querySelectorAll('.producto-tile').forEach(tile => {
+            if (parseInt(tile.dataset.id) === id) tile.classList.remove('seleccionado');
+        });
+        renderCarrito();
+    }
+
+    function actualizarTotal() {
+        const total = carrito.reduce((sum, item) => sum + item.precioUnitario * item.cantidad, 0);
+        document.getElementById('carrito-total').textContent = `S/ ${total.toFixed(2)}`;
+    }
+
+    function limpiarVenta() {
+        carrito = [];
+        document.getElementById('v-cliente').value = '';
+        document.getElementById('v-documento').value = '';
+        document.getElementById('v-telefono').value = '';
+        document.getElementById('v-metodopago').value = 'Efectivo';
+        renderCarrito();
+        document.querySelectorAll('.producto-tile').forEach(t => t.classList.remove('seleccionado'));
+    }
+
+    function guardarVenta() {
+        const cliente = document.getElementById('v-cliente').value.trim();
+        if (!cliente) { alert('El nombre del cliente es obligatorio'); return; }
+        if (carrito.length === 0) { alert('Agrega al menos un producto'); return; }
+
+        const total = carrito.reduce((sum, item) => sum + item.precioUnitario * item.cantidad, 0);
+
+        const venta = {
+            Cliente: cliente,
+            DocumentoCliente: document.getElementById('v-documento').value,
+            TelefonoCliente: document.getElementById('v-telefono').value,
+            MetodoPago: document.getElementById('v-metodopago').value,
+            Total: total
+        };
+
+        const detalles = carrito.map(item => ({
+            IdProducto: item.idProducto,
+            Cantidad: item.cantidad,
+            PrecioUnitario: item.precioUnitario,
+            SubTotal: item.precioUnitario * item.cantidad
+        }));
+
+        fetch('/Venta/GuardarVenta', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ venta, detalles })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.resultado) {
+                limpiarVenta();
+                bootstrap.Modal.getInstance(document.getElementById('modalCreate')).hide();
+                location.reload();
+            } else {
+                alert(result.mensaje);
+            }
+        });
+    }
+
+    function abrirDetalle(id) {
+        fetch(`/Venta/DetalleVenta/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('d-idventa').textContent = '#' + data.idVenta;
+                document.getElementById('d-cliente').textContent = data.cliente;
+                document.getElementById('d-documento').textContent = data.documentoCliente || '—';
+                document.getElementById('d-telefono').textContent = data.telefonoCliente || '—';
+                document.getElementById('d-metodopago').textContent = data.metodoPago;
+                document.getElementById('d-usuario').textContent = data.usuario?.nombreUsuario || '—';
+                document.getElementById('d-fecha').textContent = new Date(data.fechaVenta).toLocaleDateString('es-PE');
+                document.getElementById('d-estado').textContent = data.estado ? 'Activa' : 'Anulada';
+                document.getElementById('d-total').textContent = `S/ ${parseFloat(data.total).toFixed(2)}`;
+
+                const tbody = document.getElementById('d-detalles');
+                tbody.innerHTML = '';
+                (data.detalles || []).forEach(d => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${d.producto?.nombreProducto || '—'}</td>
+                            <td>${d.cantidad}</td>
+                            <td>S/ ${parseFloat(d.precioUnitario).toFixed(2)}</td>
+                            <td>S/ ${parseFloat(d.subTotal).toFixed(2)}</td>
+                        </tr>`;
+                });
+            });
+    }
+
+    function anularVenta(id) {
+        if (!confirm('¿Estás seguro de anular esta venta? Se revertirá el stock.')) return;
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        fetch('/Venta/AnularVenta', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(id)
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.resultado) location.reload();
+            else alert(result.mensaje);
+        });
+    }
+</script>
+</body>
+</html>
+

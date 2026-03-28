@@ -1,6 +1,7 @@
 ﻿using CapaEntidad;
 using CapaNegocio;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CapaPresentacion.Controllers
 {
@@ -13,10 +14,7 @@ namespace CapaPresentacion.Controllers
         [HttpGet]
         public IActionResult Index(string TipoDeMovimiento, string Busqueda)
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Login", "Usuario");
-            }
+            
 
             ViewBag.Productos = productoBL.ListadoProducto(null);
             var listadoMovimientos = movimientostockBL.ListadoMovimiento(TipoDeMovimiento, Busqueda);
@@ -31,6 +29,10 @@ namespace CapaPresentacion.Controllers
 
             try
             {
+                var json = HttpContext.Session.GetString("Usuario");
+                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+                movimientoStock.IdUsuario = usuario.IdUsuario;
+
                 movimientostockBL.AgregarMovimiento(movimientoStock);
             }
             catch(Exception ex)

@@ -85,7 +85,8 @@ namespace CapaDatos
                             FechaVenta = fechaVenta,
                             Total = Convert.ToDecimal(reader["Total"]),
                             Estado = Convert.ToBoolean(reader["Estado"]),
-                            usuario = usuario
+                            usuario = usuario,
+                            Detalles = new List<DetalleVenta>()
                         };
 
                         reader.NextResult();
@@ -99,9 +100,9 @@ namespace CapaDatos
                                     Codigo = reader["Codigo"].ToString()
                                 },
 
-                                Cantidad = Convert.ToInt32("Cantidad"),
-                                PrecioUnitario = Convert.ToDecimal("PrecioUnitario"),
-                                SubTotal = Convert.ToDecimal("SubTotal")
+                                Cantidad = Convert.ToInt32(reader["Cantidad"]),
+                                PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                                SubTotal = Convert.ToDecimal(reader["SubTotal"])
                             });
                         }
 

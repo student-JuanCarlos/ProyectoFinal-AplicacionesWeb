@@ -1,12 +1,15 @@
 ﻿using CapaEntidad;
+using CapaEntidad.Request;
 using CapaNegocio;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CapaPresentacion.Controllers
 {
     public class VentaController : Controller
     {
         VentaBL ventaBL = new VentaBL();
+        ProductoBL productoBL = new ProductoBL();
 
         public IActionResult Index(string Busqueda, string NombreUsuario, bool? Estado)
         {
@@ -15,20 +18,25 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
             }
 
+            ViewBag.Productos = productoBL.ListadoProducto(null);
             var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, NombreUsuario, Estado);
 
             return View(listadoVentas);
         }
 
         [HttpPost]
-        public JsonResult GuardarVenta(Venta venta, List<DetalleVenta> detalles) 
+        public JsonResult GuardarVenta([FromBody] VentaRequest request) 
         {
             bool resultado = true;
             string mensaje = "";
 
             try
             {
-                ventaBL.RegistroVenta(venta, detalles);
+                var json = HttpContext.Session.GetString("Usuario");
+                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+                request.Venta.IdUsuario = usuario.IdUsuario;
+
+                ventaBL.RegistroVenta(request.Venta, request.Detalles);
             }
             catch(Exception ex)
             {
@@ -40,14 +48,17 @@ namespace CapaPresentacion.Controllers
         }
 
         [HttpPost]
-        public JsonResult AnularVenta(int idVenta, int IdUsuario)
+        public JsonResult AnularVenta([FromBody] int IdVenta)
         {
             bool resultado = true;
             string mensaje = "";
 
             try
             {
-                ventaBL.AnularVenta(idVenta, IdUsuario);
+                var json = HttpContext.Session.GetString("Usuario");
+                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+
+                ventaBL.AnularVenta(IdVenta, usuario.IdUsuario);
             }
             catch(Exception ex)
             {
@@ -58,16 +69,23 @@ namespace CapaPresentacion.Controllers
             return Json(new { resultado, mensaje });
         }
 
-        [HttpGet]
         public IActionResult DetalleVenta(int id)
         {
-            if(HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Login", "Usuario");
-            }
-
             var ventaBuscada = ventaBL.DetalleVenta(id);
-            return View(ventaBuscada);
+            return Json(ventaBuscada);
+        }
+
+        [HttpGet]
+        public IActionResult RegistroVentas(string Busqueda, bool? Estado)
+        {
+            if (HttpContext.Session.GetString("Usuario") == null)
+                return RedirectToAction("Login", "Usuario");
+
+
+            ViewBag.Productos = productoBL.ListadoProducto(null);
+            var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, null, Estado)
+                                ?? new List<Venta>();
+            return View(listadoVentas);
         }
     }
 

@@ -126,8 +126,8 @@
             <form method="get" asp-action="Index" asp-controller="MovimientoStock" class="d-flex gap-2">
                 <select name="TipoDeMovimiento" class="filter-select">
                     <option value="">Todos</option>
-                    <option value="ENTRADA" @(Context.Request.Query["TipoDeMovimiento"] == "ENTRADA" ? "selected" : "")>Entrada</option>
-                    <option value="SALIDA" @(Context.Request.Query["TipoDeMovimiento"] == "SALIDA" ? "selected" : "")>Salida</option>
+                    <option value="ENTRADA" selected="@(Context.Request.Query["TipoDeMovimiento"] == "ENTRADA")">Entrada</option>
+                    <option value="SALIDA" selected="@(Context.Request.Query["TipoDeMovimiento"] == "SALIDA")">Salida</option>
                 </select>
                 <input type="text" name="Busqueda" value="@Context.Request.Query["Busqueda"]"
                        class="search-input" placeholder="Buscar producto..." />
@@ -223,16 +223,6 @@
                         <div class="col-6 mb-3">
                             <label class="form-label">Cantidad</label>
                             <input type="number" name="Cantidad" class="form-control" min="1" required />
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label class="form-label">Usuario</label>
-                            <select name="IdUsuario" class="form-select" required>
-                                <option value="">Seleccionar...</option>
-                                @foreach (var usr in ViewBag.Usuarios)
-                                {
-                                    <option value="@usr.IdUsuario">@usr.NombreUsuario</option>
-                                }
-                            </select>
                         </div>
                     </div>
                     <div class="mb-3">
