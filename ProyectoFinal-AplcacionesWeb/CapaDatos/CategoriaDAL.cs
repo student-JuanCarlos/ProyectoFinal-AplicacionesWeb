@@ -9,11 +9,11 @@ namespace CapaDatos
 {
     public class CategoriaDAL
     {
-
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
         public int InsertarCategoria(Categoria categoria)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -38,7 +38,7 @@ namespace CapaDatos
         public int ActualizarCategoria(Categoria categoria)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -64,7 +64,7 @@ namespace CapaDatos
         public List<Categoria> ListadoCategoria(string Busqueda)
         {
             List<Categoria> listadoCategorias = new List<Categoria>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {

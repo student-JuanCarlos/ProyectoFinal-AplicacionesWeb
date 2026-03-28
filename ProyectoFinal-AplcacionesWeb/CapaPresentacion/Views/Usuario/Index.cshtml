@@ -1,0 +1,552 @@
+﻿@model IEnumerable<CapaEntidad.Usuario>
+
+@{
+    ViewData["Title"] = "Usuarios";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; min-height: 100vh; background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+
+        /* ── Sidebar ── */
+        #sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid #222;
+        }
+        .sidebar-brand h5 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .sidebar-brand small { font-size: 11px; color: #888; }
+        .sidebar-section {
+            padding: 1rem 1.25rem 0.25rem;
+            font-size: 10px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar-nav { flex: 1; padding: 0.5rem 0; }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.6rem 1.25rem;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            color: #fff;
+            background: #111;
+        }
+        .sidebar-nav a.active { border-left: 3px solid #fff; }
+        .sidebar-nav a i { font-size: 16px; }
+        .sidebar-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid #222;
+        }
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .sidebar-footer a:hover { color: #fff; }
+
+        /* ── Main ── */
+        #main {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111;
+            margin: 0;
+        }
+        .page-subtitle { font-size: 13px; color: #888; margin-top: 2px; }
+
+        .btn-nuevo {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .btn-nuevo:hover { background: #222; }
+
+        /* ── Cards ── */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .usuario-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .usuario-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-top {
+            padding: 20px 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .usuario-nombre { font-weight: 700; color: #111; font-size: 0.95rem; }
+        .usuario-email  { font-size: 0.78rem; color: #9ca3af; margin-top: 2px; }
+
+        .card-body {
+            padding: 14px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .card-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+        }
+        .card-info-label { color: #9ca3af; font-weight: 500; }
+        .card-info-value { color: #374151; font-weight: 600; }
+
+        .badge-rol {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.73rem;
+            font-weight: 600;
+        }
+        .badge-rol.superuser      { background: #ede9fe; color: #7c3aed; }
+        .badge-rol.administrador  { background: #dbeafe; color: #1d4ed8; }
+        .badge-rol.trabajador     { background: #d1fae5; color: #065f46; }
+
+        .badge-estado {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.73rem;
+            font-weight: 600;
+        }
+        .badge-estado.activo   { background: #d1fae5; color: #065f46; }
+        .badge-estado.inactivo { background: #fee2e2; color: #991b1b; }
+        .badge-estado::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .card-footer-acciones {
+            padding: 12px 20px;
+            border-top: 1px solid #f3f4f6;
+            display: flex;
+            gap: 8px;
+        }
+        .btn-accion {
+            border: none;
+            padding: 7px 0;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            flex: 1;
+            text-align: center;
+        }
+        .btn-accion:hover   { opacity: 0.8; }
+        .btn-detalle        { background: #f3f4f6; color: #374151; }
+        .btn-edit           { background: #dbeafe; color: #1d4ed8; }
+        .btn-activar        { background: #d1fae5; color: #065f46; }
+        .btn-desactivar     { background: #fee2e2; color: #991b1b; }
+
+        /* ── Modales ── */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .modal-header {
+            border-bottom: 1px solid #f3f4f6;
+            padding: 20px 24px 16px;
+        }
+        .modal-title { font-size: 1rem; font-weight: 700; color: #111; }
+        .modal-body  { padding: 20px 24px; }
+        .modal-footer { border-top: 1px solid #f3f4f6; padding: 16px 24px; }
+
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 4px; }
+        .form-control, .form-select {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 0.875rem;
+            color: #111;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+            outline: none;
+        }
+        .btn-cancelar {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-guardar {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-guardar:hover { background: #222; }
+
+        .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .detalle-item label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .detalle-item span { font-size: 0.9rem; color: #111; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="sidebar-brand">
+        <h5>Sistema de Inventario<br />y Ventas</h5>
+        <small>Panel de control</small>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="/Usuario/InicioAdministrador"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+
+        <div class="sidebar-section">Gestión</div>
+        <a href="/Usuario/Index" class="active"><i class="bi bi-people"></i> Usuarios</a>
+        <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
+        <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+        <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+
+        <div class="sidebar-section">Inventario & Ventas</div>
+        <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        <a href="/Venta/Index"><i class="bi bi-receipt"></i> Ventas</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a asp-action="CerrarSesion"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+    </div>
+</div>
+
+<div id="main">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Usuarios</h1>
+            <p class="page-subtitle">Gestión de usuarios del sistema</p>
+        </div>
+        <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
+            <i class="bi bi-plus-lg"></i> Nuevo Usuario
+        </button>
+    </div>
+
+    <div class="cards-grid">
+        @foreach (var item in Model)
+        {
+            var rolClass = item.rol.NombreRol.ToLower() switch {
+                "superuser"     => "superuser",
+                "administrador" => "administrador",
+                _               => "trabajador"
+            };
+
+            <div class="usuario-card">
+                <div class="card-top">
+                    <div class="avatar">@item.NombreUsuario.Substring(0, 1).ToUpper()</div>
+                    <div>
+                        <div class="usuario-nombre">@item.NombreUsuario</div>
+                        <div class="usuario-email">@item.Email</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-info-row">
+                        <span class="card-info-label">Rol</span>
+                        <span class="badge-rol @rolClass">@item.rol.NombreRol</span>
+                    </div>
+                    <div class="card-info-row">
+                        <span class="card-info-label">Registro</span>
+                        <span class="card-info-value">@item.FechaCreacion.ToString("dd MMM yyyy")</span>
+                    </div>
+                    <div class="card-info-row">
+                        <span class="card-info-label">Estado</span>
+                        <span class="badge-estado @(item.Estado ? "activo" : "inactivo")">
+                            @(item.Estado ? "Activo" : "Inactivo")
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer-acciones">
+                    <button class="btn-accion btn-detalle"
+                            onclick="abrirDetalle(@item.IdUsuario)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalDetalle">
+                        <i class="bi bi-eye"></i> Ver
+                    </button>
+                    <button class="btn-accion btn-edit"
+                            onclick="abrirEdit(@item.IdUsuario)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEdit">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button class="btn-accion @(item.Estado ? "btn-desactivar" : "btn-activar")"
+                            onclick="cambiarEstado(@item.IdUsuario)">
+                        @(item.Estado ? "Desactivar" : "Activar")
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal Create -->
+<div class="modal fade" id="modalCreate" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="GuardarUsuario">
+                    <input type="hidden" name="IdUsuario" value="0" />
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Usuario</label>
+                        <input type="text" name="NombreUsuario" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select name="IdRol" class="form-control">
+                            @foreach (var rol in ViewBag.Roles)
+                            {
+                                <option value="@rol.IdRol">@rol.NombreRol</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Documento</label>
+                            <input type="text" name="Documento" class="form-control" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" name="Telefono" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="Email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="Contraseña" class="form-control" required />
+                    </div>
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn-guardar">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detalle -->
+<div class="modal fade" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detalle-grid">
+                    <div class="detalle-item"><label>ID</label><span id="detalle-id"></span></div>
+                    <div class="detalle-item"><label>Nombre</label><span id="detalle-nombre"></span></div>
+                    <div class="detalle-item"><label>Rol</label><span id="detalle-rol"></span></div>
+                    <div class="detalle-item"><label>Documento</label><span id="detalle-documento"></span></div>
+                    <div class="detalle-item"><label>Teléfono</label><span id="detalle-telefono"></span></div>
+                    <div class="detalle-item"><label>Email</label><span id="detalle-email"></span></div>
+                    <div class="detalle-item"><label>Fecha Registro</label><span id="detalle-fecha"></span></div>
+                    <div class="detalle-item"><label>Estado</label><span id="detalle-estado"></span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="GuardarUsuario">
+                    <input type="hidden" id="edit-id" name="IdUsuario" />
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Usuario</label>
+                        <input type="text" id="edit-nombre" name="NombreUsuario" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select id="edit-idrol" name="IdRol" class="form-control">
+                            @foreach (var rol in ViewBag.Roles)
+                            {
+                                <option value="@rol.IdRol">@rol.NombreRol</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Documento</label>
+                            <input type="text" id="edit-documento" name="Documento" class="form-control" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" id="edit-telefono" name="Telefono" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn-guardar">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function abrirDetalle(id) {
+        fetch(`/Usuario/DetalleUsuario/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('detalle-id').textContent = data.idUsuario;
+                document.getElementById('detalle-nombre').textContent = data.nombreUsuario;
+                document.getElementById('detalle-rol').textContent = data.rol.nombreRol;
+                document.getElementById('detalle-documento').textContent = data.documento || '—';
+                document.getElementById('detalle-telefono').textContent = data.telefono || '—';
+                document.getElementById('detalle-email').textContent = data.email;
+                document.getElementById('detalle-fecha').textContent = new Date(data.fechaCreacion).toLocaleDateString('es-PE');
+                document.getElementById('detalle-estado').textContent = data.estado ? 'Activo' : 'Inactivo';
+            });
+    }
+
+    function abrirEdit(id) {
+        fetch(`/Usuario/DetalleUsuario/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('edit-id').value = data.idUsuario;
+                document.getElementById('edit-nombre').value = data.nombreUsuario;
+                document.getElementById('edit-idrol').value = data.rol.idRol;
+                document.getElementById('edit-documento').value = data.documento;
+                document.getElementById('edit-telefono').value = data.telefono;
+            });
+    }
+
+    function cambiarEstado(id) {
+        fetch(`/Usuario/CambiarEstadoUsuario/${id}`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.resultado) location.reload();
+            else alert(data.mensaje);
+        });
+    }
+</script>
+</body>
+</html>

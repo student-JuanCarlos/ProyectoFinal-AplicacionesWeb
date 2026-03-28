@@ -9,11 +9,11 @@ namespace CapaDatos
 {
     public class ProductoDAL
     {
-
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
         public int InsertarProducto(Producto producto)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -44,7 +44,7 @@ namespace CapaDatos
         public int ActualizarProducto(Producto producto)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -74,7 +74,7 @@ namespace CapaDatos
         public List<Producto> ListadoProducto(String Busqueda)
         {
             List<Producto> listadoProductos = new List<Producto>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -115,8 +115,8 @@ namespace CapaDatos
 
         public Producto DetalleProducto(int id)
         {
-            Producto producto = null;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            Producto producto = null;   
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -165,7 +165,7 @@ namespace CapaDatos
         public int CambiarEstado(int id)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -189,7 +189,7 @@ namespace CapaDatos
         public List<MovimientoStock> HistorialMovimientos(int id)
         {
             List<MovimientoStock> listadoMovimientos = new List<MovimientoStock>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {

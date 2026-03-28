@@ -10,11 +10,11 @@ namespace CapaDatos
 {
     public class UsuarioDAL
     {
-
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
         public int RegistroUsuario(Usuario usuario)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -43,7 +43,7 @@ namespace CapaDatos
         public int ActualizarUsuario(Usuario usuario)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -71,7 +71,7 @@ namespace CapaDatos
         public Usuario LoginUsuario(string Email, string Contraseña)
         {
             Usuario usuario = null;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -111,7 +111,7 @@ namespace CapaDatos
         public List<Usuario> ListadoUsuario(String Busqueda)
         {
             List<Usuario> listaUsuario = new List<Usuario>();
-            using(SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using(SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -154,7 +154,7 @@ namespace CapaDatos
         public Usuario DetalleUsuario(int id)
         {
             Usuario usuario = null;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -169,6 +169,7 @@ namespace CapaDatos
                     {
                         Rol rol = new Rol()
                         {
+                            IdRol = Convert.ToInt32(reader["IdRol"]),
                             NombreRol = reader["NombreRol"].ToString()
                         };
 
@@ -198,7 +199,7 @@ namespace CapaDatos
         public int CambiarEstado(int id)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {

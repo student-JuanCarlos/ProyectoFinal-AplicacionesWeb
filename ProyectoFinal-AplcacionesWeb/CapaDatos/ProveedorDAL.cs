@@ -9,11 +9,11 @@ namespace CapaDatos
 {
     public class ProveedorDAL
     {
-
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
         public int InsertarProveedor(Proveedor proveedor)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -41,7 +41,7 @@ namespace CapaDatos
         public int ActualizarProveedor(Proveedor proveedor)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -70,7 +70,7 @@ namespace CapaDatos
         public Proveedor DetalleProveedor(int id)
         {
             Proveedor proveedor = null;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -106,7 +106,7 @@ namespace CapaDatos
         public List<Proveedor> ListadoProveedor(string Busqueda)
         {
             List<Proveedor> listadoProveedores = new List<Proveedor>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -141,7 +141,7 @@ namespace CapaDatos
         public int CambiarEstadoProveedor(int id)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {

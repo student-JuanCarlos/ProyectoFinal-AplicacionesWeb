@@ -1,0 +1,379 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Sistema de Inventario y Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { display: flex; min-height: 100vh; background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+
+            #sidebar {
+                width: 250px;
+                min-height: 100vh;
+                background: #000;
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0; left: 0;
+                z-index: 100;
+            }
+            .sidebar-brand {
+                padding: 1.5rem 1.25rem;
+                border-bottom: 1px solid #222;
+            }
+            .sidebar-brand h5 {
+                font-size: 14px;
+                font-weight: 600;
+                color: #fff;
+                margin: 0;
+                line-height: 1.4;
+            }
+            .sidebar-brand small {
+                font-size: 11px;
+                color: #888;
+            }
+            .sidebar-section {
+                padding: 1rem 1.25rem 0.25rem;
+                font-size: 10px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .sidebar-nav { flex: 1; padding: 0.5rem 0; }
+            .sidebar-nav a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 0.6rem 1.25rem;
+                color: #aaa;
+                text-decoration: none;
+                font-size: 14px;
+                transition: all 0.2s;
+            }
+            .sidebar-nav a:hover, .sidebar-nav a.active {
+                color: #fff;
+                background: #111;
+            }
+            .sidebar-nav a.active { border-left: 3px solid #fff; }
+            .sidebar-nav a i { font-size: 16px; }
+            .sidebar-footer {
+                padding: 1rem 1.25rem;
+                border-top: 1px solid #222;
+            }
+            .sidebar-footer a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #aaa;
+                text-decoration: none;
+                font-size: 14px;
+            }
+            .sidebar-footer a:hover { color: #fff; }
+
+            #main {
+                margin-left: 250px;
+                flex: 1;
+                padding: 2rem;
+            }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+            .page-header h4 {
+                font-size: 22px;
+                font-weight: 600;
+                color: #111;
+                margin: 0;
+            }
+            .page-header small { color: #888; font-size: 13px; }
+            .badge-date {
+                background: #f0f0f0;
+                color: #555;
+                padding: 6px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+            }
+
+            .stat-card {
+                border-radius: 14px;
+                padding: 1.5rem;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+            .stat-card .label {
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                opacity: 0.85;
+            }
+            .stat-card .value {
+                font-size: 36px;
+                font-weight: 700;
+                margin: 0.5rem 0 0.25rem;
+            }
+            .stat-card .desc { font-size: 12px; opacity: 0.75; }
+            .stat-card i {
+                position: absolute;
+                right: 1.25rem;
+                top: 1.25rem;
+                font-size: 28px;
+                opacity: 0.3;
+            }
+            .card-blue { background: #1565C0; }
+            .card-green { background: #2E7D32; }
+            .card-red { background: #C62828; }
+            .card-purple { background: #6A1B9A; }
+
+            .section-card {
+                background: #fff;
+                border-radius: 14px;
+                padding: 1.5rem;
+                margin-top: 1.5rem;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            }
+            .section-title {
+                font-size: 15px;
+                font-weight: 600;
+                color: #111;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .section-title::before {
+                content: '';
+                width: 8px; height: 8px;
+                border-radius: 50%;
+                background: #1565C0;
+                display: inline-block;
+            }
+            table { width: 100%; border-collapse: collapse; }
+            thead th {
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                color: #999;
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid #f0f0f0;
+                letter-spacing: 0.5px;
+            }
+            tbody td {
+                font-size: 13px;
+                color: #333;
+                padding: 0.75rem;
+                border-bottom: 1px solid #f9f9f9;
+            }
+            tbody tr:last-child td { border-bottom: none; }
+            .badge-completada {
+                background: #e8f5e9;
+                color: #2E7D32;
+                font-size: 11px;
+                font-weight: 600;
+                padding: 3px 10px;
+                border-radius: 20px;
+            }
+            .badge-stock {
+                background: #ffebee;
+                color: #C62828;
+                font-size: 12px;
+                font-weight: 700;
+                padding: 3px 10px;
+                border-radius: 20px;
+            }
+            .rank-badge {
+                width: 24px; height: 24px;
+                border-radius: 50%;
+                background: #f0f0f0;
+                color: #555;
+                font-size: 12px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="sidebar-brand">
+            <h5>Sistema de Inventario<br />y Ventas</h5>
+            <small>Panel de control</small>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-section">Principal</div>
+            <a href="/Usuario/InicioAdministrador" class="active">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+
+            <div class="sidebar-section">Gestión</div>
+            <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+            <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
+            <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+            <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+
+            <div class="sidebar-section">Inventario & Ventas</div>
+            <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+            <a href="/Venta/Index"><i class="bi bi-receipt"></i> Ventas</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a asp-action="CerrarSesion" class="bi bi-box-arrow-left"> Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div id="main">
+        <div class="page-header">
+            <div>
+                <h4>Dashboard</h4>
+                <small>Sistema de Gestión</small>
+                @if (ViewBag.Usuario != null)
+                {
+                    <p class="subtitle">
+                        Bienvenido <strong class="user-name">@ViewBag.Usuario.NombreUsuario</strong>, que planes para hoy?
+                    </p>
+                }
+                else
+                {
+                    <p class="subtitle">Bienvenido</p>        
+                }
+            </div>
+            <span class="badge-date">@DateTime.Now.ToString("dd MMM yyyy")</span>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="stat-card card-blue">
+                    <i class="bi bi-cart-check"></i>
+                    <div class="label">Ventas de hoy</div>
+                    <div class="value">@ViewBag.TotalVentas</div>
+                    <div class="desc">transacciones completadas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card card-green">
+                    <i class="bi bi-cash-stack"></i>
+                    <div class="label">Ingresos del día</div>
+                    <div class="value">S/ @ViewBag.TotalIngresos</div>
+                    <div class="desc">total facturado hoy</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card card-red">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <div class="label">Bajo stock</div>
+                    <div class="value">@(((List<CapaEntidad.Producto>)ViewBag.ProductosBajoStock).Count)</div>
+                    <div class="desc">productos requieren reposición</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card card-purple">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <div class="label">Más vendidos</div>
+                    <div class="value">Top 5</div>
+                    <div class="desc">productos más solicitados</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">Últimas ventas</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>N° Venta</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var venta in (List<CapaEntidad.Venta>)ViewBag.UltimasVentas)
+                    {
+                        <tr>
+                            <td>#@venta.IdVenta</td>
+                            <td>@venta.Cliente</td>
+                            <td>@venta.FechaVenta.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>S/ @venta.Total</td>
+                            <td><span class="badge-completada">Completada</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="two-col">
+            <div class="section-card" style="margin-top:0">
+                <div class="section-title">Bajo stock</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in (List<CapaEntidad.Producto>)ViewBag.ProductosBajoStock)
+                        {
+                            <tr>
+                                <td>@p.NombreProducto</td>
+                                <td>@p.categoria.NombreCategoria</td>
+                                <td><span class="badge-stock">@p.StockActual</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-card" style="margin-top:0">
+                <div class="section-title">Más vendidos</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Producto</th>
+                            <th>Total vendido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rank = 1;
+                        }
+                        @foreach (var p in (List<CapaEntidad.Producto>)ViewBag.ProductosMasVendidos)
+                        {
+                            <tr>
+                                <td><div class="rank-badge">@rank</div></td>
+                                <td>@p.NombreProducto</td>
+                                <td>@p.TotalVendido uds.</td>
+                            </tr>
+                            rank++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

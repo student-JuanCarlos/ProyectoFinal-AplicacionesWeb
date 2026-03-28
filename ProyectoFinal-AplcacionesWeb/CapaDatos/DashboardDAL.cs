@@ -9,10 +9,10 @@ namespace CapaDatos
 {
     public class DashboardDAL
     {
-
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
         public (int TotalVentas, decimal TotalIngresos) VentasHoy()
         {
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -41,7 +41,7 @@ namespace CapaDatos
         public List<Producto> ProductosBajoStock()
         {
             List<Producto> lista = new List<Producto>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -77,7 +77,7 @@ namespace CapaDatos
         public List<Producto> ProductosMasVendidos()
         {
             List<Producto> lista = new List<Producto>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -107,7 +107,7 @@ namespace CapaDatos
         public List<Venta> UltimasVentas()
         {
             List<Venta> lista = new List<Venta>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {

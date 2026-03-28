@@ -9,11 +9,11 @@ namespace CapaDatos
 {
     public class VentaDAL
     {
-
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
         public int RegistrarVenta(Venta venta, List<DetalleVenta> detalles)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -55,7 +55,7 @@ namespace CapaDatos
         public Venta DetalleVenta(int id)
         {
             Venta venta = null;
-            using(SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using(SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -118,7 +118,7 @@ namespace CapaDatos
         public int AnularVenta(int IdVenta, int IdUsuario)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -143,7 +143,7 @@ namespace CapaDatos
         public List<Venta> ListadoVentaConFiltro(string Busqueda, string NombreUsuario, bool? Estado)
         {
             List<Venta> listadoVentas = new List<Venta>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {

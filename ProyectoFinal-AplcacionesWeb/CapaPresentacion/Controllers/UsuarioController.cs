@@ -17,11 +17,15 @@ namespace CapaPresentacion.Controllers
         [HttpGet]
         public IActionResult Index(string Busqueda)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+                return RedirectToAction("Login", "Usuario");
+
             var listadoUsuarios = usuarioBL.ListadoUsuario(Busqueda);
             ViewBag.Roles = new List<Rol>
             {
-                new Rol { IdRol = 1, NombreRol = "Administrador" },
-                new Rol { IdRol = 2, NombreRol = "Trabajador" }
+                new Rol { IdRol = 1, NombreRol = "SuperUser" },
+                new Rol { IdRol = 2, NombreRol = "Administrador" },
+                new Rol { IdRol = 3, NombreRol = "Trabajador" }
             };
 
             return View(listadoUsuarios);
@@ -47,7 +51,7 @@ namespace CapaPresentacion.Controllers
         }
 
         [HttpPost]
-        public JsonResult CambiarEstado(int id)
+        public JsonResult CambiarEstadoUsuario(int id)
         {
             bool resultado = true;
             string mensaje = "";
@@ -88,6 +92,11 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("InicioAdministrador", "Usuario");
             }
 
+            if (usuario.rol.NombreRol == "SuperUser")
+            {
+                return RedirectToAction("InicioAdministrador", "Usuario");
+            }
+
             if (usuario.rol.NombreRol == "Trabajador")
             {
                 return RedirectToAction("RegistroVentas", "Venta");
@@ -98,21 +107,24 @@ namespace CapaPresentacion.Controllers
         }
 
         [HttpGet]
-        public IActionResult Registrar()
+        public IActionResult Login()
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Login", "Usuario");
-            }
-
             return View();
         }
 
         [HttpGet]
         public IActionResult InicioAdministrador()
-        {
+        { 
             if (HttpContext.Session.GetString("Usuario") == null)
                 return RedirectToAction("Login", "Usuario");
+
+            var json = HttpContext.Session.GetString("Usuario");
+
+            if (json != null)
+            {
+                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+                ViewBag.Usuario = usuario;
+            }
 
             var (TotalVentas, TotalIngresos) = dashboardBL.VentasHoy();
 
@@ -123,6 +135,12 @@ namespace CapaPresentacion.Controllers
             ViewBag.UltimasVentas = dashboardBL.UltimasVentas();
 
             return View();
+        }
+
+        public IActionResult DetalleUsuario(int id)
+        {
+            var usuario = usuarioBL.DetalleUsuario(id);
+            return Json(usuario);
         }
 
         public IActionResult CerrarSesion()

@@ -15,15 +15,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Usuario}/{action=Login}/{id?}");
+    pattern: "{controller=Usuario}/{action=InicioAdministrador}/{id?}");
 
 
 app.Run();

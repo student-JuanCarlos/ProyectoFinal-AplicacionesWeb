@@ -9,10 +9,12 @@ namespace CapaDatos
 {
     public class MovimientoStockDAL
     {
+        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
+
         public int RegistrarMovimiento(MovimientoStock movimiento)
         {
             int f = 0;
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
@@ -40,7 +42,7 @@ namespace CapaDatos
         public List<MovimientoStock> ListadoMovimiento(string TipoMovimiento, string Busqueda)
         {
             List<MovimientoStock> listadoMovimientos = new List<MovimientoStock>();
-            using (SqlConnection cn = new SqlConnection(ConexionBD.cn))
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
