@@ -82,7 +82,7 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
 
 
-            ViewBag.Productos = productoBL.ListadoProducto(null);
+            ViewBag.Productos = productoBL.ListadoProducto(null) ?? new List<Producto>();
             var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, null, Estado)
                                 ?? new List<Venta>();
             return View(listadoVentas);
