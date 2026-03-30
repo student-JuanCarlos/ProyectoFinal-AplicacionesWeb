@@ -557,6 +557,7 @@ BEGIN
     SET NOCOUNT ON;
     SELECT
     v.IdVenta,
+    v.IdUsuario,
     v.Cliente,
     v.FechaVenta,
     v.Total,

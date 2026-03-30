@@ -1,8 +1,11 @@
 ﻿using CapaDatos;
 using CapaEntidad;
 using CapaNegocio;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -69,7 +72,7 @@ namespace CapaPresentacion.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string Email, string Contraseña)
+        public async Task<IActionResult> Login(string Email, string Contraseña)
         {
             Usuario usuario = usuarioBL.LoginUsuario(Email, Contraseña);
 
@@ -84,22 +87,25 @@ namespace CapaPresentacion.Controllers
                 return View("Login");
             }
 
+            var claims = new List<Claim>{
+                new Claim(ClaimTypes.Name, usuario.NombreUsuario),
+                new Claim(ClaimTypes.Role, usuario.rol.NombreRol)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
             HttpContext.Session.SetString("Usuario", JsonConvert.SerializeObject(usuario));
             HttpContext.Session.SetString("Rol", usuario.rol.NombreRol);
 
-            if (usuario.rol.NombreRol == "Administrador")
-            {
-                return RedirectToAction("InicioAdministrador", "Usuario");
-            }
-
-            if (usuario.rol.NombreRol == "SuperUser")
+            if (usuario.rol.NombreRol == "Administrador" || usuario.rol.NombreRol == "SuperUser")
             {
                 return RedirectToAction("InicioAdministrador", "Usuario");
             }
 
             if (usuario.rol.NombreRol == "Trabajador")
             {
-                return RedirectToAction("RegistroVentas", "Venta");
+                return RedirectToAction("InicioAdministrador", "Usuario");
             }
 
             ViewBag.Error = "Rol no autorizado";

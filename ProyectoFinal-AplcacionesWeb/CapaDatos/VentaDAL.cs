@@ -161,6 +161,7 @@ namespace CapaDatos
                     {
                         Usuario usuario = new Usuario()
                         {
+                            IdUsuario = Convert.ToInt32(reader["IdUsuario"]),
                             NombreUsuario = reader["NombreUsuario"].ToString()
                         };
 
@@ -171,6 +172,7 @@ namespace CapaDatos
                             IdVenta = Convert.ToInt32(reader["IdVenta"]),
                             Cliente = reader["Cliente"].ToString(),
                             FechaVenta = fechaVenta,
+                            IdUsuario = Convert.ToInt32(reader["IdUsuario"]),
                             Total = Convert.ToDecimal(reader["Total"]),
                             Estado = Convert.ToBoolean(reader["Estado"]),
                             usuario = usuario

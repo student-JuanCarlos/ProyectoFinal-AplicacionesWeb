@@ -18,6 +18,10 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
             }
 
+            var json = HttpContext.Session.GetString("Usuario");
+            var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+            ViewBag.Usuario = usuario;
+
             ViewBag.Productos = productoBL.ListadoProducto(null);
             var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, NombreUsuario, Estado);
 
@@ -75,18 +79,6 @@ namespace CapaPresentacion.Controllers
             return Json(ventaBuscada);
         }
 
-        [HttpGet]
-        public IActionResult RegistroVentas(string Busqueda, bool? Estado)
-        {
-            if (HttpContext.Session.GetString("Usuario") == null)
-                return RedirectToAction("Login", "Usuario");
-
-
-            ViewBag.Productos = productoBL.ListadoProducto(null) ?? new List<Producto>();
-            var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, null, Estado)
-                                ?? new List<Venta>();
-            return View(listadoVentas);
-        }
     }
 
 }

@@ -155,12 +155,18 @@
         <div class="sidebar-section">Principal</div>
         <a href="/Usuario/InicioAdministrador"><i class="bi bi-grid-1x2"></i> Dashboard</a>
         <div class="sidebar-section">Gestión</div>
-        <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+        @if (User.IsInRole("SuperUser"))
+        {
+            <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+        }
         <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
-        <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
-        <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
-        <div class="sidebar-section">Inventario & Ventas</div>
-        <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        @if (User.IsInRole("Administrador") || User.IsInRole("SuperUser"))
+        {
+           <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+           <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+           <div class="sidebar-section">Inventario & Ventas</div>
+           <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        }
         <a href="/Venta/Index" class="active"><i class="bi bi-receipt"></i> Ventas</a>
     </nav>
     <div class="sidebar-footer">
@@ -241,10 +247,13 @@
                                             data-bs-target="#modalDetalle">
                                         <i class="bi bi-eye"></i> Ver
                                     </button>
-                                    @if (item.Estado)
+                                    @{
+                                        bool tienePermiso = User.IsInRole("Administrador") || User.IsInRole("SuperUser");
+
+                                    }
+                                    @if (item.Estado && (tienePermiso || ViewBag.Usuario.IdUsuario == item.IdUsuario))
                                     {
-                                        <button class="btn-accion btn-anular"
-                                                onclick="anularVenta(@item.IdVenta)">
+                                        <button class="btn-accion btn-anular" onclick="anularVenta(@item.IdVenta)">
                                             <i class="bi bi-x-circle"></i> Anular
                                         </button>
                                     }
