@@ -19,6 +19,8 @@ namespace CapaEntidad
 
         public string EmailEmpresa { get; set; }
 
+        public string ProductoOfrecido { get; set; }
+
         public bool Estado { get; set; }
 
     }

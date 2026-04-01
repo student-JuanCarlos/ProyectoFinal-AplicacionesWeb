@@ -181,9 +181,12 @@
                        class="search-input" placeholder="Buscar producto..." />
                 <button type="submit" class="btn-nuevo"><i class="bi bi-search"></i></button>
             </form>
-            <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
-                <i class="bi bi-plus-lg"></i> Nuevo Producto
-            </button>
+             @if (User.IsInRole("Administrador") || User.IsInRole("SuperUser"))
+             {
+                 <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                      <i class="bi bi-plus-lg"></i> Nuevo Producto
+                 </button>
+             }
         </div>
     </div>
 

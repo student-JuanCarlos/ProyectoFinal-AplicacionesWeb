@@ -623,12 +623,13 @@ CREATE PROC sp_Insertar_Proveedor
 @RUC VARCHAR(20),
 @Telefono VARCHAR(20),
 @PaginaWeb VARCHAR(100),
-@EmailEmpresa VARCHAR(100)
+@EmailEmpresa VARCHAR(100),
+@ProductoOfrecido VARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Proveedor(NombreProveedor, RUC, Telefono, PaginaWeb, EmailEmpresa, Estado)
-    VALUES(@NombreProveedor, @RUC, @Telefono, @PaginaWeb, @EmailEmpresa, 1)
+    INSERT INTO Proveedor(NombreProveedor, RUC, Telefono, PaginaWeb, EmailEmpresa, ProductoOfrecido, Estado)
+    VALUES(@NombreProveedor, @RUC, @Telefono, @PaginaWeb, @EmailEmpresa, @ProductoOfrecido, 1)
 END
 
 GO
@@ -638,7 +639,8 @@ CREATE PROC sp_Actualizar_Proveedor
 @RUC VARCHAR(20),
 @Telefono VARCHAR(20),
 @PaginaWeb VARCHAR(100),
-@EmailEmpresa VARCHAR(100)
+@EmailEmpresa VARCHAR(100),
+@ProductoOfrecido VARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -647,7 +649,8 @@ BEGIN
         RUC = @RUC,
         Telefono = @Telefono,
         PaginaWeb = @PaginaWeb,
-        EmailEmpresa = @EmailEmpresa
+        EmailEmpresa = @EmailEmpresa,
+        ProductoOfrecido = @ProductoOfrecido
     WHERE IdProveedor = @IdProveedor
 END
 
@@ -664,6 +667,7 @@ BEGIN
     Telefono,
     PaginaWeb,
     EmailEmpresa,
+    ProductoOfrecido,
     Estado
     FROM Proveedor
     WHERE IdProveedor = @IdProveedor
@@ -680,6 +684,7 @@ BEGIN
     NombreProveedor,
     Telefono,
     EmailEmpresa,
+    ProductoOfrecido,
     Estado
     FROM Proveedor
     WHERE (@Busqueda IS NULL OR NombreProveedor LIKE '%' + @Busqueda + '%')
@@ -779,6 +784,7 @@ SELECT * FROM Usuario
 SELECT * FROM MovimientosStock
 SELECT * FROM Rol
 SELECT * FROM Categoria
+SELECT * FROM Proveedor
 
 --------------------------INSERCIONES----------------------------------------
 INSERT INTO Rol(NombreRol) VALUES('SuperUser')

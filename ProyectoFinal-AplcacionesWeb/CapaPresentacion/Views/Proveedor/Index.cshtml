@@ -188,6 +188,10 @@
                             <span class="card-info-value">@(string.IsNullOrEmpty(item.EmailEmpresa) ? "—" : item.EmailEmpresa)</span>
                         </div>
                         <div class="card-info-row">
+                            <span class="card-info-label">Producto Ofrecido</span>
+                            <span class="card-info-value">@(string.IsNullOrEmpty(item.ProductoOfrecido) ? "-": item.ProductoOfrecido)</span>
+                        </div>
+                        <div class="card-info-row">
                             <span class="card-info-label">Estado</span>
                             <span class="badge-estado @(item.Estado ? "activo" : "inactivo")">
                                 @(item.Estado ? "Activo" : "Inactivo")
@@ -251,6 +255,10 @@
                         <label class="form-label">Página Web</label>
                         <input type="text" name="PaginaWeb" class="form-control" placeholder="https://..." />
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Producto Ofrecido</label>
+                        <input type="text" name="ProductoOfrecido" class="form-control"/>
+                    </div>
                     <div class="modal-footer px-0 pb-0">
                         <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" class="btn-guardar" onclick="guardarProveedor('formCreate')">Guardar</button>
@@ -277,6 +285,7 @@
                     <div class="detalle-item"><label>Teléfono</label><span id="detalle-telefono"></span></div>
                     <div class="detalle-item"><label>Email</label><span id="detalle-email"></span></div>
                     <div class="detalle-item"><label>Página Web</label><span id="detalle-web"></span></div>
+                    <div class="detalle-item"><label>Producto Ofrecido</label><span id="detalle-productoOfrecido"></span></div>
                     <div class="detalle-item"><label>Estado</label><span id="detalle-estado"></span></div>
                 </div>
             </div>
@@ -320,6 +329,10 @@
                         <label class="form-label">Página Web</label>
                         <input type="text" id="edit-web" name="PaginaWeb" class="form-control" />
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Producto Ofrecido</label>
+                        <input type="text" id="edit-producto" name="ProductoOfrecido" class="form-control"/>
+                    </div>
                     <div class="modal-footer px-0 pb-0">
                         <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" class="btn-guardar" onclick="guardarProveedor('formEdit')">Guardar</button>
@@ -342,6 +355,7 @@
                 document.getElementById('detalle-telefono').textContent = data.telefono || '—';
                 document.getElementById('detalle-email').textContent = data.emailEmpresa || '—';
                 document.getElementById('detalle-web').textContent = data.paginaWeb || '—';
+                document.getElementById('detalle-productoOfrecido').textContent = data.productoOfrecido || '-';
                 document.getElementById('detalle-estado').textContent = data.estado ? 'Activo' : 'Inactivo';
             });
     }
@@ -356,6 +370,7 @@
                 document.getElementById('edit-telefono').value = data.telefono;
                 document.getElementById('edit-email').value = data.emailEmpresa;
                 document.getElementById('edit-web').value = data.paginaWeb;
+                document.getElementById('edit-producto').value = data.productoOfrecido;
             });
     }
 

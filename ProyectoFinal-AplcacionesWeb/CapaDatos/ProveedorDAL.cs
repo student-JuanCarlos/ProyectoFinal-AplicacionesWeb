@@ -26,6 +26,7 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@Telefono", proveedor.Telefono);
                     cmd.Parameters.AddWithValue("@PaginaWeb", proveedor.PaginaWeb);
                     cmd.Parameters.AddWithValue("@EmailEmpresa", proveedor.EmailEmpresa);
+                    cmd.Parameters.AddWithValue("@ProductoOfrecido", proveedor.ProductoOfrecido);
                     cn.Open();
                     f = cmd.ExecuteNonQuery();
                     cn.Close();
@@ -55,6 +56,7 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@Telefono", proveedor.Telefono);
                     cmd.Parameters.AddWithValue("@PaginaWeb", proveedor.PaginaWeb);
                     cmd.Parameters.AddWithValue("@EmailEmpresa", proveedor.EmailEmpresa);
+                    cmd.Parameters.AddWithValue("@ProductoOfrecido", proveedor.ProductoOfrecido);
                     cn.Open();
                     f = cmd.ExecuteNonQuery();
                     cn.Close();
@@ -91,6 +93,7 @@ namespace CapaDatos
                             Telefono = reader["Telefono"].ToString(),
                             PaginaWeb = reader["PaginaWeb"].ToString(),
                             EmailEmpresa = reader["EmailEmpresa"].ToString(),
+                            ProductoOfrecido = reader["ProductoOfrecido"].ToString(),
                             Estado = Convert.ToBoolean(reader["Estado"])
                         };
                     }
@@ -126,6 +129,7 @@ namespace CapaDatos
                             NombreProveedor = reader["NombreProveedor"].ToString(),
                             Telefono = reader["Telefono"].ToString(),
                             EmailEmpresa = reader["EmailEmpresa"].ToString(),
+                            ProductoOfrecido = reader["ProductoOfrecido"].ToString(),
                             Estado = Convert.ToBoolean(reader["Estado"])
                         });
                     }

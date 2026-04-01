@@ -32,13 +32,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
-app.UseAuthorization();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Usuario}/{action=InicioAdministrador}/{id?}");
+    pattern: "{controller=Usuario}/{action=Login}/{id?}");
 
 
 app.Run();
