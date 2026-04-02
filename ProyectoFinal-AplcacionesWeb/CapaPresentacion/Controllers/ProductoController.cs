@@ -62,8 +62,9 @@ namespace CapaPresentacion.Controllers
                             System.IO.File.Delete(fotoAnterior);
                     }
 
-                    nombreImagen = $"{Guid.NewGuid()}{Path.GetExtension(model.Fotografia.FileName)}";
-                    var pathImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos", nombreImagen);
+                    var nombreRealImagen = $"{Guid.NewGuid()}{Path.GetExtension(model.Fotografia.FileName)}";
+                    nombreImagen = $"assets/img/productos/{nombreRealImagen}";
+                    var pathImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos", nombreRealImagen);
 
                     Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos"));
 
@@ -77,7 +78,7 @@ namespace CapaPresentacion.Controllers
                 {
                     IdProducto = model.IdProducto,
                     NombreProducto = model.NombreProducto,
-                    Fotografia = $"assets/img/productos/{nombreImagen}",
+                    Fotografia = $"{nombreImagen}",
                     Codigo = model.Codigo,
                     IdCategoria = model.IdCategoria,
                     IdProveedor = model.IdProveedor,
