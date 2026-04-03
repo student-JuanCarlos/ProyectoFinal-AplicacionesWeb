@@ -531,21 +531,21 @@
                 <p class="form-label" style="color:#9ca3af; font-size:0.82rem;">
                     Usuario: <strong id="password-nombre" style="color:#111;"></strong>
                 </p>
-                <form id="formPassword">
+                <form method="post" asp-action="CambiarContraseña" asp-controller="Usuario">
                     <input type="hidden" id="password-id" name="id" />
                     <input type="hidden" id="password-email" name="Email" />
                     <div class="mb-3">
                         <label class="form-label">Nueva Contraseña</label>
                         <input type="password" id="password-nueva" name="contraseñaNueva" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Confirmar Contraseña</label>
-                        <input type="password" id="password-confirmar" class="form-control" required />
-                    </div>
-                    <div class="modal-footer px-0 pb-0">
-                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn-guardar" onclick="cambiarPassword()">Guardar</button>
-                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirmar Contraseña</label>
+                    <input type="password" id="password-confirmar" class="form-control" required />
+                </div>
+                <div class="modal-footer px-0 pb-0">
+                    <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-guardar" onclick="return validarPassword()">Guardar</button>
+                </div>
                 </form>
             </div>
         </div>
@@ -603,29 +603,12 @@
         document.getElementById('password-confirmar').value = '';
     }
 
-    function cambiarPassword() {
-        const nueva = document.getElementById('password-nueva').value.trim();
-        const confirmar = document.getElementById('password-confirmar').value.trim();
-
-        if (!nueva) { alert('Ingresa la nueva contraseña'); return; }
-        if (nueva !== confirmar) { alert('Las contraseñas no coinciden'); return; }
-
-        const form = document.getElementById('formPassword');
-        const formData = new FormData(form);
-
-        fetch('/Usuario/CambiarContraseña', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.resultado) {
-                bootstrap.Modal.getInstance(document.getElementById('modalPassword')).hide();
-                alert('Contraseña cambiada correctamente');
-            } else {
-                alert(result.mensaje);
-            }
-        });
+    function validarPassword() {
+    const nueva = document.getElementById('password-nueva').value.trim();
+    const confirmar = document.getElementById('password-confirmar').value.trim();
+    if (!nueva) { alert('Ingresa la nueva contraseña'); return false; }
+    if (nueva !== confirmar) { alert('Las contraseñas no coinciden'); return false; }
+    return true;
     }
 </script>
 </body>
