@@ -220,5 +220,30 @@ namespace CapaDatos
             return f;
         }
 
+        public int CambiarContraseña(int id, string contraseñaNueva)
+        {
+            int f = 0;
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "sp_CambiarContraseña";
+                    cmd.Parameters.AddWithValue("@IdUsuario", id);
+                    cmd.Parameters.AddWithValue("@ContraseñaNueva", contraseñaNueva);
+                    cn.Open();
+                    f = cmd.ExecuteNonQuery();
+                    cn.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return f;
+        }
+
     }
 }

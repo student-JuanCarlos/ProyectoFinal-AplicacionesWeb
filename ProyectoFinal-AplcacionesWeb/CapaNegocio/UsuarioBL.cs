@@ -13,6 +13,8 @@ namespace CapaNegocio
 
         public int GestionarUsuario(Usuario usuario)
         {
+            usuario.Contraseña = Utilidades.ConvertirSha256(usuario.Contraseña, usuario.Email);
+
             if(usuario.IdUsuario == 0)
                 return usuarioDAL.RegistroUsuario(usuario);
             else
@@ -21,7 +23,9 @@ namespace CapaNegocio
 
         public Usuario LoginUsuario(string Email, string Contraseña)
         {
-            return usuarioDAL.LoginUsuario(Email, Contraseña);
+            string contraseñaHash = Utilidades.ConvertirSha256(Contraseña, Email);
+
+            return usuarioDAL.LoginUsuario(Email, contraseñaHash);
         }
 
         public List<Usuario> ListadoUsuario(string Busqueda)
@@ -37,6 +41,15 @@ namespace CapaNegocio
         public int CambiarEstado(int id)
         {
             return usuarioDAL.CambiarEstado(id);
+        }
+
+        public int CambiarContraseña(int id, string Email, string contraseñaNueva)
+        {
+            var usuario = usuarioDAL.DetalleUsuario(id);
+
+            string contraseñaHash = Utilidades.ConvertirSha256(contraseñaNueva, Email);
+
+            return usuarioDAL.CambiarContraseña(id, contraseñaHash);
         }
 
     }

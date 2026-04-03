@@ -794,3 +794,18 @@ INSERT INTO Rol(NombreRol) VALUES('Trabajador')
 INSERT INTO Usuario(NombreUsuario, Documento, Telefono, Email, Contraseña, FechaCreacion, Estado, IdRol)
 VALUES('SuperUser', '12345678', '987 654 321', 'superuser@gmail.com', '123', GETDATE(), 1, 1)
 
+
+------------------------------------------------------------------------------
+----------PARCHES DE SEGURIDAD
+------------------------------------------------------------------------------
+
+GO
+CREATE PROC sp_CambiarContraseña
+@IdUsuario INT,
+@ContraseñaNueva VARCHAR(255)
+AS
+BEGIN
+    UPDATE Usuario
+        SET Contraseña = @ContraseñaNueva
+        WHERE IdUsuario = @IdUsuario
+END

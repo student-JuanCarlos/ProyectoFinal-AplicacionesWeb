@@ -156,5 +156,24 @@ namespace CapaPresentacion.Controllers
             return RedirectToAction("Login", "Usuario");
         }
 
+        [HttpPost]
+        public IActionResult CambiarContraseña(int id, string Email, string contraseñaNueva)
+        {
+            bool resultado = true;
+            string mensaje = "";
+
+            try
+            {
+                usuarioBL.CambiarContraseña(id, Email, contraseñaNueva);
+            }
+            catch(Exception ex)
+            {
+                resultado = false;
+                mensaje = ex.Message;
+            }
+
+            return Json(new { resultado, mensaje });
+        }
+
     }
 }
