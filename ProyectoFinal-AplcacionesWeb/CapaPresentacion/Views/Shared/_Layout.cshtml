@@ -221,7 +221,7 @@
     </div>
 
     <script>
-        const WEBHOOK_URL = 'https://adds-toxic-flags-holdings.trycloudflare.com/webhook/8dbf0d22-cb3d-467b-9d6f-feb3691088d7';
+        const WEBHOOK_URL = 'https://adds-toxic-flags-holdings.trycloudflare.com/webhook-test/8dbf0d22-cb3d-467b-9d6f-feb3691088d7';
         let sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
 
         function toggleChat() {
@@ -300,11 +300,11 @@
                 const rawText = await res.text();
                 let output = '';
                 try {
-                    const data = JSON.parse(rawText);
-                    output = data.output || data.text || data.message || rawText;
-                } catch {
-                    output = rawText;
-                }
+                const data = JSON.parse(rawText);
+                output = data.html || data.output || data.text || data.message || rawText;
+            } catch {
+                output = rawText;
+            }
                 addMessage('bot', output);
             }
 
