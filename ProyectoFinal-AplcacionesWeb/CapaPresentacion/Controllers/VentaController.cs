@@ -22,7 +22,7 @@ namespace CapaPresentacion.Controllers
             var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
             ViewBag.Usuario = usuario;
 
-            ViewBag.Productos = productoBL.ListadoProducto(null);
+            ViewBag.Productos = productoBL.ListadoConFiltro(null);
             var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, NombreUsuario, Estado);
 
             return View(listadoVentas);

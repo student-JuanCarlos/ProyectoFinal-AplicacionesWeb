@@ -516,7 +516,6 @@
     function quitarItem(index) {
         const id = carrito[index].idProducto;
         carrito.splice(index, 1);
-        // desmarcar tile
         document.querySelectorAll('.producto-tile').forEach(tile => {
             if (parseInt(tile.dataset.id) === id) tile.classList.remove('seleccionado');
         });

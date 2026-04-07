@@ -232,5 +232,47 @@ namespace CapaDatos
             return listadoMovimientos;
         }
 
+        public List<Producto> ListadoProductoConFiltro(String Busqueda)
+        {
+            List<Producto> listadoProductos = new List<Producto>();
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "sp_Listado_Producto_ConFiltro";
+                    cmd.Parameters.AddWithValue("@Busqueda", string.IsNullOrEmpty(Busqueda) ? (object)DBNull.Value : Busqueda);
+                    cn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Categoria categoria = new Categoria
+                        {
+                            NombreCategoria = reader["NombreCategoria"].ToString()
+                        };
+
+                        listadoProductos.Add(new Producto
+                        {
+                            IdProducto = Convert.ToInt32(reader["IdProducto"]),
+                            NombreProducto = reader["NombreProducto"].ToString(),
+                            Fotografia = reader["Fotografia"].ToString(),
+                            categoria = categoria,
+                            Codigo = reader["Codigo"].ToString(),
+                            PrecioVendido = Convert.ToDecimal(reader["PrecioVendido"]),
+                            StockActual = Convert.ToInt32(reader["StockActual"].ToString()),
+                            Estado = Convert.ToBoolean(reader["Estado"].ToString())
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return listadoProductos;
+        }
+
     }
 }

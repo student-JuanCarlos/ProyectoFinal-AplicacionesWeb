@@ -38,5 +38,10 @@ namespace CapaNegocio
         {
             return productoDAL.HistorialMovimientos(id);
         }
+
+        public List<Producto> ListadoConFiltro(string Busqueda)
+        {
+            return productoDAL.ListadoProductoConFiltro(Busqueda);
+        }
     }
 }

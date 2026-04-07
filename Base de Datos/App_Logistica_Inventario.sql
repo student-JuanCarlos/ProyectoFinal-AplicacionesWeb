@@ -324,6 +324,28 @@ BEGIN
 END
 
 GO
+CREATE PROC sp_Listado_Producto_ConFiltro
+@Busqueda VARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+    p.IdProducto,
+    p.NombreProducto,
+    p.Fotografia,
+    c.NombreCategoria,
+    p.Codigo,
+    p.PrecioVendido,
+    p.StockActual,
+    p.Estado
+    FROM Producto p
+    INNER JOIN Categoria c ON p.IdCategoria = c.IdCategoria
+    WHERE (@Busqueda IS NULL OR p.NombreProducto LIKE '%' + @Busqueda + '%'
+    OR p.Codigo LIKE '%' + @Busqueda + '%') AND p.Estado = 1
+    ORDER BY p.Estado DESC
+END
+
+GO
 ------------------------------------------------------------------------------
 ----------PROCEDIMIENTOS ALMACENADOS DE MovimientosStock
 ------------------------------------------------------------------------------
