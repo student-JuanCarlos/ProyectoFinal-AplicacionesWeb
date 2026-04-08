@@ -9,7 +9,7 @@ namespace CapaPresentacion.Controllers
         ProveedorBL proveedorBL = new ProveedorBL();
 
         [HttpGet]
-        public IActionResult Index(string Busqueda)
+        public IActionResult Index(int page = 1, string Busqueda = null)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
             {
@@ -17,7 +17,17 @@ namespace CapaPresentacion.Controllers
             }
 
             var listadoProveedores = proveedorBL.ListadoProveedor(Busqueda);
-            return View(listadoProveedores);
+
+            int registrosPorPagina = 8;
+            int totalProductos = listadoProveedores.Count;
+            int cantidadPaginas = Convert.ToInt32(Math.Ceiling((double)totalProductos / registrosPorPagina));
+
+            int paginasPorOmitir = registrosPorPagina * (page - 1);
+
+            ViewBag.paginas = cantidadPaginas;
+            ViewBag.paginaActual = page;
+
+            return View(listadoProveedores.Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]

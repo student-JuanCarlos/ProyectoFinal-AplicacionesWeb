@@ -18,7 +18,7 @@ namespace CapaPresentacion.Controllers
         DashboardBL dashboardBL = new DashboardBL();
 
         [HttpGet]
-        public IActionResult Index(string Busqueda)
+        public IActionResult Index(int page = 1, string Busqueda = null)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
                 return RedirectToAction("Login", "Usuario");
@@ -31,7 +31,16 @@ namespace CapaPresentacion.Controllers
                 new Rol { IdRol = 3, NombreRol = "Trabajador" }
             };
 
-            return View(listadoUsuarios);
+            int registrosPorPagina = 8;
+            int totalProductos = listadoUsuarios.Count;
+            int cantidadPaginas = Convert.ToInt32(Math.Ceiling((double)totalProductos / registrosPorPagina));
+
+            int paginasPorOmitir = registrosPorPagina * (page - 1);
+
+            ViewBag.paginas = cantidadPaginas;
+            ViewBag.paginaActual = page;
+
+            return View(listadoUsuarios.Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]

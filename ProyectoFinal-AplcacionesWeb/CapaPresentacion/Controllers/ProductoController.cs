@@ -13,7 +13,7 @@ namespace CapaPresentacion.Controllers
         ProveedorBL proveedorBL = new ProveedorBL();
 
         [HttpGet]
-        public IActionResult Index(string Busqueda, int id)
+        public IActionResult Index(int page = 1, string Busqueda = null, int id = 0)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
             {
@@ -28,7 +28,17 @@ namespace CapaPresentacion.Controllers
             ViewBag.Proveedores = proveedorBL.ListadoProveedor(null);
             ViewBag.Categorias = categoriaBL.ListadoCategoria(null);
             var listadoProductos = productoBL.ListadoProducto(Busqueda);
-            return View(listadoProductos);
+
+            int registrosPorPagina = 8;
+            int totalProductos = listadoProductos.Count;
+            int cantidadPaginas = Convert.ToInt32(Math.Ceiling((double)totalProductos / registrosPorPagina));
+
+            int paginasPorOmitir = registrosPorPagina * (page - 1);
+
+            ViewBag.paginas = cantidadPaginas;
+            ViewBag.paginaActual = page;
+
+            return View(listadoProductos.Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]
@@ -62,11 +72,9 @@ namespace CapaPresentacion.Controllers
                             System.IO.File.Delete(fotoAnterior);
                     }
 
-                    var nombreRealImagen = $"{Guid.NewGuid()}{Path.GetExtension(model.Fotografia.FileName)}";
+                    var nombreRealImagen = Path.GetFileName(model.Fotografia.FileName);
                     nombreImagen = $"assets/img/productos/{nombreRealImagen}";
                     var pathImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos", nombreRealImagen);
-
-                    Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos"));
 
                     using (var stream = new FileStream(pathImagen, FileMode.Create))
                     {

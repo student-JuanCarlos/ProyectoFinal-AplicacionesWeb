@@ -216,6 +216,21 @@
             }
         </div>
     }
+
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-center">
+            <nav aria-label="Page Navigation">
+                <ul class="pagination pagination-sm">
+                    @for(int i = 0; i < ViewBag.paginas; i++)
+                    {
+                        <li class="page-item @(ViewBag.paginaActual == (i+1) ? "active" : "")">
+                            <a class="page-link" asp-route-page="@(i+1)" >@(i+1)</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Create -->
