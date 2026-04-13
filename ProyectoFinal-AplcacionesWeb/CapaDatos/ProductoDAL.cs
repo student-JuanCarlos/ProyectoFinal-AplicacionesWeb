@@ -26,7 +26,6 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@Codigo", producto.Codigo);
                     cmd.Parameters.AddWithValue("@CostoObtenido", producto.CostoObtenido);
                     cmd.Parameters.AddWithValue("@PrecioVendido", producto.PrecioVendido);
-                    cmd.Parameters.AddWithValue("@Stock", producto.StockActual);
                     cmd.Parameters.AddWithValue("@IdCategoria", producto.IdCategoria);
                     cmd.Parameters.AddWithValue("@IdProveedor", producto.IdProveedor);
                     cn.Open();

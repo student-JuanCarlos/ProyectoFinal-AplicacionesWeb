@@ -308,6 +308,7 @@
                         <div class="col-6 mb-3">
                             <label class="form-label">Categoría</label>
                             <select name="IdCategoria" class="form-select">
+                                <option>--SELECCIONE--</option>
                                 @foreach (var cat in ViewBag.Categorias)
                                 {
                                     <option value="@cat.IdCategoria">@cat.NombreCategoria</option>
@@ -317,6 +318,7 @@
                         <div class="col-6 mb-3">
                             <label class="form-label">Proveedor</label>
                             <select name="IdProveedor" class="form-select">
+                                <option>--SELECCIONE--</option>
                                 @foreach (var prov in ViewBag.Proveedores)
                                 {
                                     <option value="@prov.IdProveedor">@prov.NombreProveedor</option>
@@ -332,12 +334,6 @@
                         <div class="col-6 mb-3">
                             <label class="form-label">Precio Vendido</label>
                             <input type="number" step="0.01" name="PrecioVendido" class="form-control" required />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <label class="form-label">Stock Actual</label>
-                            <input type="number" name="StockActual" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer px-0 pb-0">
@@ -428,12 +424,6 @@
                         <div class="col-6 mb-3">
                             <label class="form-label">Precio Vendido</label>
                             <input type="number" step="0.01" id="edit-precio" name="PrecioVendido" class="form-control" required />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <label class="form-label">Stock Actual</label>
-                            <input type="number" id="edit-stock" name="StockActual" class="form-control" required />
                         </div>
                     </div>
                     <div class="modal-footer px-0 pb-0">

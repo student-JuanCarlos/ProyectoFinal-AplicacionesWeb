@@ -221,7 +221,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO Producto (NombreProducto, Fotografia, Codigo, CostoObtenido, PrecioVendido, StockActual, StockMinimo, Estado, IdCategoria, IdProveedor)
-    VALUES (@NombreProducto, @Fotografia, @Codigo, @CostoObtenido, @PrecioVendido, @Stock, 10, 1, @IdCategoria, @IdProveedor)
+    VALUES (@NombreProducto, @Fotografia, @Codigo, @CostoObtenido, @PrecioVendido, 0, 10, 1, @IdCategoria, @IdProveedor)
 END
 
 GO
