@@ -1,0 +1,437 @@
+{
+  "name": "Asistente de Logistica, Inventario y Ventas",
+  "nodes": [
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=id-definitio2",
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        -464
+      ],
+      "id": "21c1721f-2c4b-4227-9dd3-40c1ee85ab15",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        -464
+      ],
+      "id": "093c8045-f48d-453d-a5ed-006fdc10d62c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "TU_ID_DE_OPENAI",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.html2pdf.app/v1/generate",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "html",
+              "value": "={{ $json.html_para_pdf }}"
+            },
+            {
+              "name": "apiKey",
+              "value": "TU_API_PKEY"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1264,
+        -784
+      ],
+      "id": "690df623-a864-4717-8c99-2d2a139e505d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const respuesta = $input.first().json.output || \"\";\nconst htmlMatch = respuesta.match(/\\[HTML\\]([\\s\\S]*?)\\[\\/HTML\\]/i);\n\nlet tituloDetectado = respuesta.split('[HTML]')[0].replace(/Aquí tienes el|el reporte solicitado:|:|\\[/gi, '').trim();\nif (!tituloDetectado || tituloDetectado.length > 50) tituloDetectado = \"Reporte del Sistema\";\n\nconst fechaSolo = new Date().toLocaleDateString('es-PE', { \n    timeZone: 'America/Lima',\n    day: '2-digit', \n    month: '2-digit', \n    year: 'numeric' \n});\n\nlet htmlFinal = \"\";\n\nif (htmlMatch) {\n    let contenido = htmlMatch[1].trim();\n    contenido = contenido.split('</td>').map(col => {\n        if (col.includes('(Cant:')) {\n            return col.replace(/, /g, '<br>• ').replace('<td>', '<td>• ');\n        }\n        return col;\n    }).join('</td>');\n\n    htmlFinal = `\n    <!DOCTYPE html>\n    <html lang=\"es\">\n    <head>\n        <meta charset=\"UTF-8\">\n        <style>\n            body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #333; background-color: #fff; }\n            \n            /* Encabezado */\n            .header-container { text-align: center; border-bottom: 3px solid #1a1a2e; margin-bottom: 30px; padding-bottom: 10px; }\n            .report-title { color: #1a1a2e; font-size: 22px; text-transform: uppercase; letter-spacing: 2px; margin: 0; }\n            .report-date { font-size: 13px; color: #666; margin-top: 5px; font-weight: bold; }\n            \n            /* Tabla Principal */\n            table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: auto; }\n            th { background: #1a1a2e; color: #ffffff; padding: 10px 5px; text-align: center; font-size: 10px; text-transform: uppercase; border: 1px solid #1a1a2e; }\n            td { padding: 8px 5px; border: 1px solid #eeeeee; font-size: 10px; vertical-align: top; color: #444; }\n            \n            /* Filas intercaladas */\n            tr:nth-child(even) { background: #f8f9fa; }\n\n            /* Estilo específico para la columna de productos (la última) */\n            td:last-child { \n                line-height: 1.4; \n                color: #222; \n                white-space: nowrap; /* Evita que el texto se amontone si hay espacio */\n            }\n        </style>\n    </head>\n    <body>\n        <div class=\"header-container\">\n            <h1 class=\"report-title\">${tituloDetectado.toUpperCase()}</h1>\n            <div class=\"report-date\">FECHA: ${fechaSolo}</div>\n        </div>\n        ${contenido}\n    </body>\n    </html>`;\n} else {\n    htmlFinal = `<!DOCTYPE html><html><body style=\"font-family:sans-serif; padding:20px;\">${respuesta.replace(/\\n/g, '<br>')}</body></html>`;\n}\n\nreturn {\n    html_para_pdf: htmlFinal,\n    tiene_formato: !!htmlMatch\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        -784
+      ],
+      "id": "204d6baf-f003-4890-a303-14b1426dcbab",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1ccfd878-0728-49ca-9646-dde145e259f7",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "[GENERAR_PDF]",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        816,
+        -688
+      ],
+      "id": "b165bc4e-abcd-4bf6-b13e-72ae2d776565",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}",
+        "options": {
+          "systemMessage": "Eres el Asistente de Reportes del Sistema de Gestión (Logística e Inventario). Tu única fuente de verdad es la base de datos SQL.\n\nFLUJO DE TRABAJO OBLIGATORIO:\n\nIDENTIFICAR: Si el usuario pide un reporte, boleta, comprobante o lista (Productos, Ventas, Proveedores, Movimientos), ejecuta la herramienta SQL correspondiente.\n\nPROCESAR: Una vez recibas los datos de la consulta fija (JSON), conviértelos a una tabla HTML limpia.\n\nFORMATO HTML: >    - Usa etiquetas <table>, <thead>, <tbody>, <tr>, <th>, <td>.\n\nNo incluyas estilos CSS complejos (el nodo Code ya los tiene). Solo estructura.\n\nEncierra TODO el código HTML entre las etiquetas [HTML] y [/HTML].\n\nREGLAS CRÍTICAS:\n\nCERO ALUCINACIÓN: Si la consulta SQL no devuelve datos, informa que no hay registros. No inventes nombres de productos ni montos.\n\nESTRICTO: No saludes ni des explicaciones largas. Ve directo al reporte.\n\nLENGUAJE: Responde siempre en español.\n\nREGLA DE CIERRE OBLIGATORIA: > Inmediatamente después de cerrar la etiqueta [/HTML], debes escribir la palabra clave [GENERAR_PDF] en una nueva línea. No añadas despedidas ni texto después de esa palabra. Si el usuario pidió un reporte o documento, esta palabra es el disparador técnico de la descarga."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        -688
+      ],
+      "id": "9911540d-6ce8-4c4c-9610-741731ade93d",
+      "name": "Consultor"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "TU_PATH_UNICO",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -256,
+        -688
+      ],
+      "id": "2a4caeb6-5728-4f46-8f61-63b6191ebde8",
+      "name": "Webhook",
+      "webhookId": "TU_WEBHOOKID"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1040,
+        -592
+      ],
+      "id": "7f069282-e393-4f79-bb24-eab8fe0be48a",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "responseDataSource": "set",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/pdf"
+              },
+              {
+                "name": "Content-Disposition",
+                "value": "attachment; filename=\"reporte.pdf\""
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1488,
+        -784
+      ],
+      "id": "b008de94-61c5-464d-b5b5-65e138a2ab68",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Lectura de datos de la tabla Producto",
+        "operation": "executeQuery",
+        "query": "SELECT\n  p.NombreProducto,\n  p.Codigo,\n  c.NombreCategoria,\n  p.CostoObtenido,\n  p.PrecioVendido,\n  pr.NombreProveedor,\n  p.StockActual\nFROM Producto p\nINNER JOIN Categoria c ON c.IdCategoria = p.IdCategoria\nINNER JOIN Proveedor pr ON pr.IdProveedor = p.IdProveedor\nWHERE p.Estado = 1\n\n\n"
+      },
+      "type": "n8n-nodes-base.microsoftSqlTool",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -464
+      ],
+      "id": "04503aeb-4de7-4091-9b84-f4e1bb8b984a",
+      "name": "Consulta de Producto",
+      "credentials": {
+        "microsoftSql": {
+          "id": "TU_ID_DE_MICROSOFT",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Lectura de datos de la tabla Proveedores",
+        "operation": "executeQuery",
+        "query": "SELECT \n  NombreProveedor,\n  RUC,\n  Telefono,\n  PaginaWeb,\n  EmailEmpresa,\n  ProductoOfrecido\nFROM Proveedor\n  WHERE Estado = 1\n"
+      },
+      "type": "n8n-nodes-base.microsoftSqlTool",
+      "typeVersion": 1.1,
+      "position": [
+        352,
+        -464
+      ],
+      "id": "c25e1f30-ffe7-40c6-9283-ff62cd0432a8",
+      "name": "Consulta Proveedor",
+      "credentials": {
+        "microsoftSql": {
+          "id": "TU_ID_MICROSOFT",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Esta herramienta devuelve el inventario detallado; lee siempre los valores de las columnas, no resumas la cantidad de filas",
+        "operation": "executeQuery",
+        "query": "SELECT \n  ms.TipoDeMovimiento,\n  ms.Cantidad,\n  p.NombreProducto,\n  ms.Motivo,\n  ms.FechaMovimiento,\n  u.NombreUsuario\nFROM MovimientosStock ms\nINNER JOIN Producto p ON p.IdProducto = ms.IdProducto\nINNER JOIN Usuario u ON u.IdUsuario = ms.IdUsuario\n"
+      },
+      "type": "n8n-nodes-base.microsoftSqlTool",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        -464
+      ],
+      "id": "dbee310d-8d06-45dd-a99c-4d73bdbb1bd0",
+      "name": "Consulta de MovimientosStock",
+      "credentials": {
+        "microsoftSql": {
+          "id": "TU_ID_MICROSOFT",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Lee los datos de Venta junto a Detalle de ventas",
+        "operation": "executeQuery",
+        "query": "SELECT \n    v.IdVenta,\n    v.Cliente,\n    v.TelefonoCliente,\n    v.FechaVenta,\n    v.MetodoPago,\n    v.Total,\n    u.NombreUsuario,\n    ProductosDetalle = STUFF((\n        SELECT ', ' + p.NombreProducto + ' (Cant: ' + CAST(dv.Cantidad AS VARCHAR) + ')'\n        FROM DetalleVenta dv\n        INNER JOIN Producto p ON dv.IdProducto = p.IdProducto\n        WHERE dv.IdVenta = v.IdVenta\n        FOR XML PATH('')), 1, 2, '')\nFROM Venta v\nINNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario\nWHERE v.Estado = 1\nORDER BY v.FechaVenta DESC;"
+      },
+      "type": "n8n-nodes-base.microsoftSqlTool",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        -464
+      ],
+      "id": "75f84a3f-c13e-48f7-998c-f0070e988f2c",
+      "name": "Consulta de Ventas y sus Detalles",
+      "credentials": {
+        "microsoftSql": {
+          "id": "TU_ID_MICROSOFT",
+          "name": "Microsoft SQL account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Consultor",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Consultor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultor": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Consultor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta de Producto": {
+      "ai_tool": [
+        [
+          {
+            "node": "Consultor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta Proveedor": {
+      "ai_tool": [
+        [
+          {
+            "node": "Consultor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta de MovimientosStock": {
+      "ai_tool": [
+        [
+          {
+            "node": "Consultor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta de Ventas y sus Detalles": {
+      "ai_tool": [
+        [
+          {
+            "node": "Consultor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1eeb33f0-811b-431e-967b-2c1f4d34fdab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "TU_INSTANCE_ID"
+  },
+  "id": "1VRXkEf4FWzJPTot",
+  "tags": []
+}

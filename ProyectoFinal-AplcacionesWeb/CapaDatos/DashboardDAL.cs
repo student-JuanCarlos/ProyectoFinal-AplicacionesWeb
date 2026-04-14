@@ -9,7 +9,7 @@ namespace CapaDatos
 {
     public class DashboardDAL
     {
-        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
+        private readonly string cadenaConexion = "tuCadenaConexion";
         public (int TotalVentas, decimal TotalIngresos) VentasHoy()
         {
             using (SqlConnection cn = new SqlConnection(cadenaConexion))

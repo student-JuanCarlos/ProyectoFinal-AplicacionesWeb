@@ -214,7 +214,6 @@ CREATE PROC sp_InsertarProducto
 @Codigo VARCHAR(20),
 @CostoObtenido DECIMAL(10,2),
 @PrecioVendido DECIMAL(10,2),
-@Stock INT,
 @IdCategoria INT,
 @IdProveedor INT
 AS

@@ -9,7 +9,7 @@ namespace CapaDatos
 {
     public class ProveedorDAL
     {
-        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
+        private readonly string cadenaConexion = "tuCadenaConexion";
         public int InsertarProveedor(Proveedor proveedor)
         {
             int f = 0;

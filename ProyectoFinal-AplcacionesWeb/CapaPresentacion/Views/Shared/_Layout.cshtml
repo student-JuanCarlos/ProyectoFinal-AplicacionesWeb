@@ -189,39 +189,42 @@
         #fab-btn:hover { background: #222; }
     </style>
 
-    <div id="chat-fab">
-        <div id="chat-window">
-            <div class="chat-header">
-                <div class="chat-header-info">
-                    <div class="chat-avatar">A</div>
-                    <div>
-                        <div class="chat-name">Asistente</div>
+    @if(User.IsInRole("Administrador") || User.IsInRole("SuperUser"))
+    {
+        <div id="chat-fab">
+            <div id="chat-window">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <div class="chat-avatar">A</div>
+                        <div>
+                            <div class="chat-name">Asistente</div>
+                        </div>
+                    </div>
+                <button class="chat-close" onclick="toggleChat()">✕</button>
+                </div>
+                <div id="chat-messages">
+                    <div class="msg-bot">
+                        <div class="msg-bot-avatar">A</div>
+                        <div class="bubble-bot">Hola 👋 Puedo consultar stock, ventas, proveedores y generar reportes PDF. ¿En qué te ayudo?</div>
                     </div>
                 </div>
-                <button class="chat-close" onclick="toggleChat()">✕</button>
-            </div>
-            <div id="chat-messages">
-                <div class="msg-bot">
-                    <div class="msg-bot-avatar">A</div>
-                    <div class="bubble-bot">Hola 👋 Puedo consultar stock, ventas, proveedores y generar reportes PDF. ¿En qué te ayudo?</div>
+                <div class="chat-input-bar">
+                    <input type="text" id="chat-input" placeholder="Escribe un mensaje..."
+                       onkeydown="if(event.key==='Enter') sendChatMsg()" />
+                    <button class="chat-send" onclick="sendChatMsg()">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
                 </div>
             </div>
-            <div class="chat-input-bar">
-                <input type="text" id="chat-input" placeholder="Escribe un mensaje..."
-                       onkeydown="if(event.key==='Enter') sendChatMsg()" />
-                <button class="chat-send" onclick="sendChatMsg()">
-                    <i class="bi bi-send-fill"></i>
-                </button>
-            </div>
+            <button id="fab-btn" onclick="toggleChat()">
+                <i class="bi bi-chat-dots-fill" style="color:#fff; font-size:20px;"></i>
+            </button>
         </div>
-
-        <button id="fab-btn" onclick="toggleChat()">
-            <i class="bi bi-chat-dots-fill" style="color:#fff; font-size:20px;"></i>
-        </button>
-    </div>
+    }
+        
 
     <script>
-        const WEBHOOK_URL = 'https://speech-corpus-either-careful.trycloudflare.com/webhook-test/8dbf0d22-cb3d-467b-9d6f-feb3691088d7';
+        const WEBHOOK_URL = 'tuWebhookURL';
         let sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
 
         function toggleChat() {

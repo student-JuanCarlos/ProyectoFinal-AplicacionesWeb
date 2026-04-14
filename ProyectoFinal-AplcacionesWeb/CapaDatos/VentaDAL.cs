@@ -9,7 +9,7 @@ namespace CapaDatos
 {
     public class VentaDAL
     {
-        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
+        private readonly string cadenaConexion = "tuCadenaConexion";
         public int RegistrarVenta(Venta venta, List<DetalleVenta> detalles)
         {
             int f = 0;

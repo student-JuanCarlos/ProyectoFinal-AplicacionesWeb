@@ -10,7 +10,7 @@ namespace CapaDatos
 {
     public class UsuarioDAL
     {
-        private readonly string cadenaConexion = "Server=localhost;Database=App_Logistica_Inventario;User Id=sa;Password=SaClave24;TrustServerCertificate=True;";
+        private readonly string cadenaConexion = "tuCadenaConexion";
         public int RegistroUsuario(Usuario usuario)
         {
             int f = 0;
