@@ -1,4 +1,11 @@
 <Solution>
+  <Folder Name="/Bussines Layer/">
+    <Project Path="SistemaLogistico.BussinesLogic/SistemaLogistico.BussinesLogic.csproj" Id="a11b8efb-195f-4877-bb1d-f85b9142fd3c" />
+    <Project Path="SistemaLogistico.Entities/SistemaLogistico.Entities.csproj" Id="8437fb0b-33db-4b28-9ad2-830c57da5c87" />
+  </Folder>
+  <Folder Name="/DataLayer/">
+    <Project Path="SistemaLogistico.Data/SistemaLogistico.Data.csproj" Id="0f89e047-d5a9-4d09-8bbc-c3ac999255f3" />
+  </Folder>
   <Project Path="CapaDatos/CapaDatos.csproj" />
   <Project Path="CapaEntidad/CapaEntidad.csproj" />
   <Project Path="CapaNegocio/CapaNegocio.csproj" />
