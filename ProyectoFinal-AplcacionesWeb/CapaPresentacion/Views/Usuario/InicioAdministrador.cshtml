@@ -278,7 +278,7 @@
                 <div class="stat-card card-red">
                     <i class="bi bi-exclamation-triangle"></i>
                     <div class="label">Bajo stock</div>
-                    <div class="value">@(((List<CapaEntidad.Producto>)ViewBag.ProductosBajoStock).Count)</div>
+                    <div class="value">@(((List<CapaPresentacion.Models.VM.ProductoVM>)ViewBag.ProductosBajoStock).Count)</div>
                     <div class="desc">productos requieren reposición</div>
                 </div>
             </div>
@@ -305,7 +305,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var venta in (List<CapaEntidad.Venta>)ViewBag.UltimasVentas)
+                    @foreach (var venta in (List<CapaPresentacion.Models.VM.VentaVM>)ViewBag.UltimasVentas)
                     {
                         <tr>
                             <td>#@venta.IdVenta</td>
@@ -331,7 +331,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var p in (List<CapaEntidad.Producto>)ViewBag.ProductosBajoStock)
+                        @foreach (var p in (List<CapaPresentacion.Models.VM.ProductoVM>)ViewBag.ProductosBajoStock)
                         {
                             <tr>
                                 <td>@p.NombreProducto</td>
@@ -357,7 +357,7 @@
                         @{
                             int rank = 1;
                         }
-                        @foreach (var p in (List<CapaEntidad.Producto>)ViewBag.ProductosMasVendidos)
+                        @foreach (var p in (List<CapaPresentacion.Models.VM.ProductoVM>)ViewBag.ProductosMasVendidos)
                         {
                             <tr>
                                 <td><div class="rank-badge">@rank</div></td>

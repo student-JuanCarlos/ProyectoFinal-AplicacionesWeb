@@ -1,10 +1,11 @@
-﻿using CapaPresentacion.Models.VM;
+﻿using CapaPresentacion.Models.Extensions;
+using CapaPresentacion.Models.VM;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SistemaLogistico.BussinesLogic.Services;
-using CapaPresentacion.Models.Extensions;
+using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -85,6 +86,7 @@ namespace CapaPresentacion.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string Email, string Contraseña)
         {
+            Debug.WriteLine($">>>>>> Email: '{Email}' | Pass: '{Contraseña}' | PassLen: {Contraseña?.Length}");
             var usuario = usuarioService.LoginUsuario(Email, Contraseña);
 
             if (usuario == null)

@@ -75,7 +75,7 @@ namespace SistemaLogistico.Data.Repository
             throw new NotImplementedException();
         }
 
-        public int Detalle(int id)
+        public Categoria Detalle(int id)
         {
             throw new NotImplementedException();
         }
