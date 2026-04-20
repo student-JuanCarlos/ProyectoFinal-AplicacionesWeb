@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SistemaLogistico.Data\SistemaLogistico.Data.csproj" />
+    <ProjectReference Include="..\SistemaLogistico.Entities\SistemaLogistico.Entities.csproj" />
+  </ItemGroup>
+
 </Project>

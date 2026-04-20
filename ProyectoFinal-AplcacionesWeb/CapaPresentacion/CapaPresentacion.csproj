@@ -13,12 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CapaEntidad\CapaEntidad.csproj" />
-    <ProjectReference Include="..\CapaNegocio\CapaNegocio.csproj" />
+    <Folder Include="wwwroot\assets\img\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\assets\img\" />
+    <ProjectReference Include="..\SistemaLogistico.BussinesLogic\SistemaLogistico.BussinesLogic.csproj" />
+    <ProjectReference Include="..\SistemaLogistico.Entities\SistemaLogistico.Entities.csproj" />
   </ItemGroup>
 
 </Project>

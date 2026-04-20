@@ -1,10 +1,10 @@
-﻿using CapaDatos;
-using CapaEntidad;
-using CapaNegocio;
+﻿using CapaPresentacion.Models.VM;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SistemaLogistico.BussinesLogic.Services;
+using CapaPresentacion.Models.Extensions;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -13,9 +13,16 @@ namespace CapaPresentacion.Controllers
 {
     public class UsuarioController : Controller
     {
+        private readonly UsuarioService usuarioService;
+        private readonly DashBoardService dashService;
+        private readonly RolService rolService;
 
-        UsuarioBL usuarioBL = new UsuarioBL();
-        DashboardBL dashboardBL = new DashboardBL();
+        public UsuarioController(UsuarioService usuario, DashBoardService dash, RolService rol)
+        {
+            usuarioService = usuario;
+            dashService = dash;
+            rolService = rol;
+        }
 
         [HttpGet]
         public IActionResult Index(int page = 1, string Busqueda = null)
@@ -23,13 +30,8 @@ namespace CapaPresentacion.Controllers
             if (HttpContext.Session.GetString("Usuario") == null)
                 return RedirectToAction("Login", "Usuario");
 
-            var listadoUsuarios = usuarioBL.ListadoUsuario(Busqueda);
-            ViewBag.Roles = new List<Rol>
-            {
-                new Rol { IdRol = 1, NombreRol = "SuperUser" },
-                new Rol { IdRol = 2, NombreRol = "Administrador" },
-                new Rol { IdRol = 3, NombreRol = "Trabajador" }
-            };
+            var listadoUsuarios = usuarioService.ListadoUsuario(Busqueda);
+            ViewBag.Roles = rolService.ListadoRoles().Select(rol => rol.ToViewModel());
 
             int registrosPorPagina = 8;
             int totalProductos = listadoUsuarios.Count;
@@ -44,14 +46,14 @@ namespace CapaPresentacion.Controllers
         }
 
         [HttpPost]
-        public JsonResult GuardarUsuario(Usuario usuario)
+        public JsonResult GuardarUsuario(UsuarioVM usuario)
         {
             bool resultado = true;
             string mensaje = "";
 
             try
             {
-                usuarioBL.GestionarUsuario(usuario);
+                usuarioService.GestionarUsuario(usuario.ToEntity());
             }
             catch(Exception ex)
             {
@@ -70,7 +72,7 @@ namespace CapaPresentacion.Controllers
 
             try
             {
-                usuarioBL.CambiarEstado(id);
+                usuarioService.CambiarEstado(id);
             }
             catch(Exception ex)
             {
@@ -83,7 +85,7 @@ namespace CapaPresentacion.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string Email, string Contraseña)
         {
-            Usuario usuario = usuarioBL.LoginUsuario(Email, Contraseña);
+            var usuario = usuarioService.LoginUsuario(Email, Contraseña);
 
             if (usuario == null)
             {
@@ -137,24 +139,24 @@ namespace CapaPresentacion.Controllers
 
             if (json != null)
             {
-                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+                var usuario = JsonConvert.DeserializeObject<SistemaLogistico.Entities.Usuario>(json);
                 ViewBag.Usuario = usuario;
             }
 
-            var (TotalVentas, TotalIngresos) = dashboardBL.VentasHoy();
+            var (TotalVentas, TotalIngresos) = dashService.VentasHoy();
 
             ViewBag.TotalVentas = TotalVentas;
             ViewBag.TotalIngresos = TotalIngresos;
-            ViewBag.ProductosBajoStock = dashboardBL.ProductosBajoStock();
-            ViewBag.ProductosMasVendidos = dashboardBL.ProductosMasVendidos();
-            ViewBag.UltimasVentas = dashboardBL.UltimasVentas();
+            ViewBag.ProductosBajoStock = dashService.ProductosBajoStock();
+            ViewBag.ProductosMasVendidos = dashService.ProductosMasVendidos();
+            ViewBag.UltimasVentas = dashService.UltimasVentas();
 
             return View();
         }
 
         public IActionResult DetalleUsuario(int id)
         {
-            var usuario = usuarioBL.DetalleUsuario(id);
+            var usuario = usuarioService.DetalleUsuario(id).ToViewModel();
             return Json(usuario);
         }
 
@@ -173,7 +175,7 @@ namespace CapaPresentacion.Controllers
 
             try
             {
-                usuarioBL.CambiarContraseña(id, Email, contraseñaNueva);
+                usuarioService.CambiarContraseña(id, Email, contraseñaNueva);
             }
             catch(Exception ex)
             {

@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
+using SistemaLogistico.BussinesLogic.Inyeccion;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.Inyeccion();
 builder.Services.AddSession();
 builder.Services.Configure<FormOptions>(options =>
 {
@@ -15,8 +17,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 {
     options.LoginPath = "/Usuario/Login";
 });
-
-
 
 var app = builder.Build();
 
