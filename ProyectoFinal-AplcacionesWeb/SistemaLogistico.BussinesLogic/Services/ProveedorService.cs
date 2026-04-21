@@ -37,5 +37,10 @@ namespace SistemaLogistico.BussinesLogic.Services
         {
             return proveedorDB.CambiarEstado(id);
         }
+
+        public List<Proveedor> ListadoProveedorConFiltro()
+        {
+            return proveedorDB.ListadoConFiltro();
+        }
     }
 }

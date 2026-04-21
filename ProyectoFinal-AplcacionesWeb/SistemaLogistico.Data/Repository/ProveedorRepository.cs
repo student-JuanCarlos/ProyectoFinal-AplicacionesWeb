@@ -173,5 +173,39 @@ namespace SistemaLogistico.Data.Repository
             }
             return listadoProveedores;
         }
+
+        public List<Proveedor> ListadoConFiltro()
+        {
+            List<Proveedor> listadoProveedores = new List<Proveedor>();
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "sp_Listado_ProveedorConFiltro";
+                    cn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        listadoProveedores.Add(new Proveedor
+                        {
+                            IdProveedor = Convert.ToInt32(reader["IdProveedor"]),
+                            NombreProveedor = reader["NombreProveedor"].ToString(),
+                            Telefono = reader["Telefono"].ToString(),
+                            EmailEmpresa = reader["EmailEmpresa"].ToString(),
+                            ProductoOfrecido = reader["ProductoOfrecido"].ToString(),
+                            Estado = Convert.ToBoolean(reader["Estado"])
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return listadoProveedores;
+        }
     }
 }

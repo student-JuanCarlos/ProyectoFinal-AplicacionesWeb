@@ -357,9 +357,9 @@
                              data-stock="@prod.StockActual"
                              data-foto="@prod.Fotografia"
                              onclick="seleccionarProducto(this)">
-                            @if (!string.IsNullOrEmpty(prod.Fotografia))
+                            @if (!string.IsNullOrEmpty(prod.FotoActual))
                             {
-                                <img src="/@prod.Fotografia" alt="@prod.NombreProducto" />
+                                <img src="/@prod.FotoActual" alt="@prod.NombreProducto" />
                             }
                             else
                             {

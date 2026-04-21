@@ -6,7 +6,7 @@ namespace CapaPresentacion.Models.Extensions
     public static class MovimientoStockExtension
     {
 
-        public static MovimientoStockVM ToViewModelM(this MovimientoStock mv)
+        public static MovimientoStockVM ToViewModel(this MovimientoStock mv)
         {
             return new MovimientoStockVM()
             {
@@ -17,16 +17,18 @@ namespace CapaPresentacion.Models.Extensions
                 Motivo = mv.Motivo,
                 FechaMovimiento = mv.FechaMovimiento,
                 IdUsuario = mv.IdUsuario,
-                producto = new ProductoVM()
+
+                producto = mv.producto != null ? new ProductoVM()
                 {
                     IdProducto = mv.IdProducto,
                     NombreProducto = mv.producto.NombreProducto
-                },
-                usuario = new UsuarioVM()
+                } : new ProductoVM() { IdProducto = mv.IdProducto },
+
+                usuario = mv.usuario != null ? new UsuarioVM()
                 {
                     IdUsuario = mv.IdUsuario,
                     NombreUsuario = mv.usuario.NombreUsuario
-                }
+                } : new UsuarioVM() { IdUsuario = mv.IdUsuario }
             };
         }
 

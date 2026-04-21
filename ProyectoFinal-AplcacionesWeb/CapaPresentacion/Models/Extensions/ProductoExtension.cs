@@ -23,16 +23,16 @@ namespace CapaPresentacion.Models.Extensions
                 StockMinimo = producto.StockMinimo,
                 Estado = producto.Estado,
                 TotalVendido = producto.TotalVendido,
-                categoria = new CategoriaVM()
+                categoria = producto.categoria != null ? new CategoriaVM()
                 {
                     IdCategoria = producto.IdCategoria,
                     NombreCategoria = producto.categoria.NombreCategoria,
-                },
-                proveedor = new ProveedorVM()
+                } : null,
+                proveedor = producto.proveedor != null ? new ProveedorVM()
                 {
                     IdProveedor = producto.IdProveedor,
                     NombreProveedor = producto.proveedor.NombreProveedor
-                }
+                } : null
             };
         }
 

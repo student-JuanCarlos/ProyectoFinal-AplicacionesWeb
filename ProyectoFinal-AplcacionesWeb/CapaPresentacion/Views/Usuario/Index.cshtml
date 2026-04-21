@@ -420,7 +420,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form method="post" asp-action="GuardarUsuario">
+                <form method="post" asp-action="GuardarUsuario" asp-controller="Usuario">
                     <input type="hidden" name="IdUsuario" value="0" />
                     <div class="mb-3">
                         <label class="form-label">Nombre Usuario</label>
@@ -429,6 +429,7 @@
                     <div class="mb-3">
                         <label class="form-label">Rol</label>
                         <select name="IdRol" class="form-control">
+                            <option>--SELECCIONE--</option>
                             @foreach (var rol in ViewBag.Roles)
                             {
                                 <option value="@rol.IdRol">@rol.NombreRol</option>
@@ -499,7 +500,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form method="post" asp-action="GuardarUsuario">
+                <form method="post" asp-action="GuardarUsuario" asp-controller="Usuario">
                     <input type="hidden" id="edit-id" name="IdUsuario" />
                     <div class="mb-3">
                         <label class="form-label">Nombre Usuario</label>

@@ -28,13 +28,13 @@ namespace CapaPresentacion.Controllers
             }
 
             if (id > 0)
-                ViewBag.HistorialMovimiento = productoService.HistorialMovimientoProducto(id);
+                ViewBag.HistorialMovimiento = productoService.HistorialMovimientoProducto(id).Select(h => h.ToViewModel()).ToList();
             else
                 ViewBag.HistorialMovimiento = new List<MovimientoStockVM>();
 
-            ViewBag.Proveedores = proveedorService.ListadoProveedor(null).Select(p => p.ToViewModel());
+            ViewBag.Proveedores = proveedorService.ListadoProveedorConFiltro().Select(p => p.ToViewModel());
             ViewBag.Categorias = categoriaService.ListadoCategoria(null).Select(c => c.ToViewModel());
-            var listadoProductos = productoService.ListadoProducto(Busqueda);
+            var listadoProductos = productoService.ListadoProducto(Busqueda).Select(p => p.ToViewModel()).ToList();
 
             int registrosPorPagina = 8;
             int totalProductos = listadoProductos.Count;
@@ -45,7 +45,7 @@ namespace CapaPresentacion.Controllers
             ViewBag.paginas = cantidadPaginas;
             ViewBag.paginaActual = page;
 
-            return View(listadoProductos.Select(p=> p.ToViewModel()).Skip(paginasPorOmitir).Take(registrosPorPagina));
+            return View(listadoProductos.Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]
@@ -89,6 +89,8 @@ namespace CapaPresentacion.Controllers
                     }
                 }
 
+                model.FotoActual = $"{nombreImagen}";
+
                 productoService.GestionarProducto(model.ToEntity());
             }
             catch (Exception ex)
@@ -128,7 +130,7 @@ namespace CapaPresentacion.Controllers
 
         public JsonResult HistorialProducto(int id)
         {
-            var historial = productoService.HistorialMovimientoProducto(id).Select(h => h.ToViewModelM()).ToList();
+            var historial = productoService.HistorialMovimientoProducto(id).Select(h => h.ToViewModel()).ToList();
             return Json(historial);
         }
 

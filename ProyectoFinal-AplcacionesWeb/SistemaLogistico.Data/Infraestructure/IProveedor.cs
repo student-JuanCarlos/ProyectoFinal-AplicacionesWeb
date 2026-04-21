@@ -7,5 +7,7 @@ namespace SistemaLogistico.Data.Infraestructure
 {
     public interface IProveedor: IGeneric<Proveedor>
     {
+        public List<Proveedor> ListadoConFiltro();
+
     }
 }

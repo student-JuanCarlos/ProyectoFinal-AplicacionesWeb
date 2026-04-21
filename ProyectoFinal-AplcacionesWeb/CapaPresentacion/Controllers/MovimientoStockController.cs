@@ -27,7 +27,7 @@ namespace CapaPresentacion.Controllers
 
             ViewBag.Productos = productoService.ListadoProducto(null).Select(p => p.ToViewModel());
             var listadoMovimientos = movimientoService.ListadoMovimiento(TipoDeMovimiento, Busqueda);
-            return View(listadoMovimientos.Select(m => m.ToViewModelM()));
+            return View(listadoMovimientos.Select(m => m.ToViewModel()));
         }
 
         [HttpPost]

@@ -150,7 +150,8 @@ namespace SistemaLogistico.Data.Repository
 
                         usuario = new Usuario()
                         {
-                            IdUsuario = Convert.ToInt32(reader["IdUsuario"].ToString()),
+                            IdUsuario = Convert.ToInt32(reader["IdUsuario"]),
+                            IdRol = Convert.ToInt32(reader["IdRol"]),
                             NombreUsuario = reader["NombreUsuario"].ToString(),
                             rol = rol,
                             Documento = reader["Documento"].ToString(),

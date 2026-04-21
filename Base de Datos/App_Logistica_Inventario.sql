@@ -341,7 +341,6 @@ BEGIN
     INNER JOIN Categoria c ON p.IdCategoria = c.IdCategoria
     WHERE (@Busqueda IS NULL OR p.NombreProducto LIKE '%' + @Busqueda + '%'
     OR p.Codigo LIKE '%' + @Busqueda + '%') AND p.Estado = 1
-    ORDER BY p.Estado DESC
 END
 
 GO
@@ -710,6 +709,23 @@ BEGIN
     FROM Proveedor
     WHERE (@Busqueda IS NULL OR NombreProveedor LIKE '%' + @Busqueda + '%')
     ORDER BY Estado DESC, NombreProveedor ASC
+END
+
+GO
+CREATE PROC sp_Listado_ProveedorConFiltro
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+    IdProveedor,
+    NombreProveedor,
+    Telefono,
+    EmailEmpresa,
+    ProductoOfrecido,
+    Estado
+    FROM Proveedor
+    WHERE Estado = 1
+    ORDER BY NombreProveedor ASC
 END
 
 GO

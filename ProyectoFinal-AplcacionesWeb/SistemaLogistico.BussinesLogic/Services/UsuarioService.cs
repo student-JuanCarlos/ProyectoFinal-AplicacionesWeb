@@ -32,7 +32,7 @@ namespace SistemaLogistico.BussinesLogic.Services
         {
             string contraseñaHash = utilidadesDB.ConvertirSha256(Contraseña, Email);
 
-            return usuarioDB.LoginUsuario(Email, Contraseña);
+            return usuarioDB.LoginUsuario(Email, contraseñaHash);
         }
 
         public List<Usuario> ListadoUsuario(string Busqueda)
