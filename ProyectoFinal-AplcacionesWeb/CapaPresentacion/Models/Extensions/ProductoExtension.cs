@@ -13,7 +13,7 @@ namespace CapaPresentacion.Models.Extensions
             {
                 IdProducto = producto.IdProducto,
                 NombreProducto = producto.NombreProducto,
-                Fotografia = producto.Fotografia,
+                FotoActual = producto.Fotografia,
                 Codigo = producto.Codigo,
                 IdCategoria = producto.IdCategoria,
                 IdProveedor = producto.IdProveedor,
@@ -42,7 +42,7 @@ namespace CapaPresentacion.Models.Extensions
             {
                 IdProducto = model.IdProducto,
                 NombreProducto = model.NombreProducto,
-                Fotografia = model.Fotografia,
+                Fotografia = model.FotoActual,
                 Codigo = model.Codigo,
                 IdCategoria = model.IdCategoria,
                 IdProveedor = model.IdProveedor,

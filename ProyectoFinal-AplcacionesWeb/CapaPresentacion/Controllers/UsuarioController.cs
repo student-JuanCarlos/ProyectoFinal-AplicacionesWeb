@@ -32,7 +32,7 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
 
             var listadoUsuarios = usuarioService.ListadoUsuario(Busqueda);
-            ViewBag.Roles = rolService.ListadoRoles().Select(rol => rol.ToViewModel());
+            ViewBag.Roles = rolService.ListadoRoles().Select(rol => rol.ToViewModel()).ToList();
 
             int registrosPorPagina = 8;
             int totalProductos = listadoUsuarios.Count;
@@ -43,7 +43,7 @@ namespace CapaPresentacion.Controllers
             ViewBag.paginas = cantidadPaginas;
             ViewBag.paginaActual = page;
 
-            return View(listadoUsuarios.Skip(paginasPorOmitir).Take(registrosPorPagina));
+            return View(listadoUsuarios.Select(u => u.ToViewModel()).Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]
@@ -86,7 +86,6 @@ namespace CapaPresentacion.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string Email, string Contraseña)
         {
-            Debug.WriteLine($">>>>>> Email: '{Email}' | Pass: '{Contraseña}' | PassLen: {Contraseña?.Length}");
             var usuario = usuarioService.LoginUsuario(Email, Contraseña);
 
             if (usuario == null)
@@ -141,7 +140,7 @@ namespace CapaPresentacion.Controllers
 
             if (json != null)
             {
-                var usuario = JsonConvert.DeserializeObject<SistemaLogistico.Entities.Usuario>(json);
+                var usuario = JsonConvert.DeserializeObject<CapaPresentacion.Models.VM.UsuarioVM>(json);
                 ViewBag.Usuario = usuario;
             }
 
@@ -149,9 +148,9 @@ namespace CapaPresentacion.Controllers
 
             ViewBag.TotalVentas = TotalVentas;
             ViewBag.TotalIngresos = TotalIngresos;
-            ViewBag.ProductosBajoStock = dashService.ProductosBajoStock();
-            ViewBag.ProductosMasVendidos = dashService.ProductosMasVendidos();
-            ViewBag.UltimasVentas = dashService.UltimasVentas();
+            ViewBag.ProductosBajoStock = dashService.ProductosBajoStock().Select(p => p.ToViewModel()).ToList();
+            ViewBag.ProductosMasVendidos = dashService.ProductosMasVendidos().Select(p => p.ToViewModel()).ToList();
+            ViewBag.UltimasVentas = dashService.UltimasVentas().Select(v => v.ToViewModel()).ToList();
 
             return View();
         }

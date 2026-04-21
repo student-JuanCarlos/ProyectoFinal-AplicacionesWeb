@@ -1,16 +1,23 @@
-﻿using CapaEntidad;
-using CapaNegocio;
-using CapaPresentacion.ViewModel;
+﻿using CapaPresentacion.Models.Extensions;
+using CapaPresentacion.Models.VM;
 using Microsoft.AspNetCore.Mvc;
+using SistemaLogistico.BussinesLogic.Services;
+using SistemaLogistico.Entities;
 
 namespace CapaPresentacion.Controllers
 {
     public class ProductoController : Controller
     {
+        private readonly ProductoService productoService;
+        private readonly CategoriaService categoriaService;
+        private readonly ProveedorService proveedorService;
 
-        ProductoBL productoBL = new ProductoBL();
-        CategoriaBL categoriaBL = new CategoriaBL();
-        ProveedorBL proveedorBL = new ProveedorBL();
+        public ProductoController(ProductoService producto, CategoriaService categoria, ProveedorService proveedor)
+        {
+            productoService = producto;
+            categoriaService = categoria;
+            proveedorService = proveedor;
+        }
 
         [HttpGet]
         public IActionResult Index(int page = 1, string Busqueda = null, int id = 0)
@@ -21,13 +28,13 @@ namespace CapaPresentacion.Controllers
             }
 
             if (id > 0)
-                ViewBag.HistorialMovimiento = productoBL.HistorialMovimientoProducto(id);
+                ViewBag.HistorialMovimiento = productoService.HistorialMovimientoProducto(id);
             else
-                ViewBag.HistorialMovimiento = new List<MovimientoStock>();
+                ViewBag.HistorialMovimiento = new List<MovimientoStockVM>();
 
-            ViewBag.Proveedores = proveedorBL.ListadoProveedor(null);
-            ViewBag.Categorias = categoriaBL.ListadoCategoria(null);
-            var listadoProductos = productoBL.ListadoProducto(Busqueda);
+            ViewBag.Proveedores = proveedorService.ListadoProveedor(null).Select(p => p.ToViewModel());
+            ViewBag.Categorias = categoriaService.ListadoCategoria(null).Select(c => c.ToViewModel());
+            var listadoProductos = productoService.ListadoProducto(Busqueda);
 
             int registrosPorPagina = 8;
             int totalProductos = listadoProductos.Count;
@@ -38,7 +45,7 @@ namespace CapaPresentacion.Controllers
             ViewBag.paginas = cantidadPaginas;
             ViewBag.paginaActual = page;
 
-            return View(listadoProductos.Skip(paginasPorOmitir).Take(registrosPorPagina));
+            return View(listadoProductos.Select(p=> p.ToViewModel()).Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]
@@ -54,7 +61,7 @@ namespace CapaPresentacion.Controllers
                     if (model.Fotografia == null)
                         return Json(new { resultado = false, mensaje = "La fotografía es obligatoria para nuevos productos." });
 
-                    var categoria = categoriaBL.ListadoCategoria(null)
+                    var categoria = categoriaService.ListadoCategoria(null)
                         .FirstOrDefault(c => c.IdCategoria == model.IdCategoria);
 
                     string prefijo = categoria.NombreCategoria.Substring(0, 3).ToUpper();
@@ -82,21 +89,7 @@ namespace CapaPresentacion.Controllers
                     }
                 }
 
-                var producto = new Producto()
-                {
-                    IdProducto = model.IdProducto,
-                    NombreProducto = model.NombreProducto,
-                    Fotografia = $"{nombreImagen}",
-                    Codigo = model.Codigo,
-                    IdCategoria = model.IdCategoria,
-                    IdProveedor = model.IdProveedor,
-                    CostoObtenido = model.CostoObtenido,
-                    PrecioVendido = model.PrecioVendido,
-                    StockActual = model.StockActual,
-                    StockMinimo = model.StockMinimo,
-                };
-
-                productoBL.GestionarProducto(producto);
+                productoService.GestionarProducto(model.ToEntity());
             }
             catch (Exception ex)
             {
@@ -115,7 +108,7 @@ namespace CapaPresentacion.Controllers
 
             try
             {
-                productoBL.CambiarEstadoProducto(id);
+                productoService.CambiarEstadoProducto(id);
             }
             catch (Exception ex)
             {
@@ -128,14 +121,14 @@ namespace CapaPresentacion.Controllers
 
         public IActionResult DetalleProducto(int id)
         {
-            var detalleproducto = productoBL.DetalleProducto(id);
+            var detalleproducto = productoService.DetalleProducto(id).ToViewModel();
 
             return Json(detalleproducto);
         }
 
         public JsonResult HistorialProducto(int id)
         {
-            var historial = productoBL.HistorialMovimientoProducto(id);
+            var historial = productoService.HistorialMovimientoProducto(id).Select(h => h.ToViewModelM()).ToList();
             return Json(historial);
         }
 

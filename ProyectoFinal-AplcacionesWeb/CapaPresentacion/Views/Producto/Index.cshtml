@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CapaEntidad.Producto>
+﻿@model IEnumerable<CapaPresentacion.Models.VM.ProductoVM>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -199,7 +199,7 @@
             @foreach (var item in Model)
             {
                 <div class="producto-card">
-                    @if (!string.IsNullOrEmpty(item.Fotografia))
+                    @if (!string.IsNullOrEmpty(item.FotoActual))
                     {
                         <img src="/@item.Fotografia" alt="@item.NombreProducto" class="card-img" />
                     }

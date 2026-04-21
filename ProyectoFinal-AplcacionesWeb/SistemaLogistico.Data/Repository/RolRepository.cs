@@ -27,15 +27,15 @@ namespace SistemaLogistico.Data.Repository
                 {
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = cn;
-                    cmd.CommandText = "SELECT * FROM Rol";
+                    cmd.CommandText = "SELECT IdRol, NombreRol FROM Rol";
                     cn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
                         listado.Add(new Rol()
                         {
-                            IdRol = Convert.ToInt32(reader[1]),
-                            NombreRol = reader[2].ToString()
+                            IdRol = Convert.ToInt32(reader["IdRol"]),
+                            NombreRol = reader["NombreRol"].ToString()
                         });
                     }
                 }

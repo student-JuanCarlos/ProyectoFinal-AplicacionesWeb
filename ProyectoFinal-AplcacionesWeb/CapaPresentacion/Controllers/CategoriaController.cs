@@ -1,13 +1,18 @@
-﻿using CapaEntidad;
-using CapaNegocio;
+﻿using CapaPresentacion.Models.Extensions;
+using CapaPresentacion.Models.VM;
 using Microsoft.AspNetCore.Mvc;
+using SistemaLogistico.BussinesLogic.Services;
 
 namespace CapaPresentacion.Controllers
 {
     public class CategoriaController : Controller
     {
+        private readonly CategoriaService categoriaService;
 
-        CategoriaBL categoriaBL = new CategoriaBL();
+        public CategoriaController(CategoriaService categoria)
+        {
+            categoriaService = categoria;
+        }
 
         [HttpGet]
         public IActionResult Index(string Busqueda)
@@ -17,20 +22,20 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
             }
 
-            var listadoCategorias = categoriaBL.ListadoCategoria(Busqueda);
+            var listadoCategorias = categoriaService.ListadoCategoria(Busqueda);
 
-            return View(listadoCategorias);
+            return View(listadoCategorias.Select(c => c.ToViewModel()));
         }
 
         [HttpPost]
-        public JsonResult GuardarCategoria(Categoria categoria)
+        public JsonResult GuardarCategoria(CategoriaVM categoria)
         {
             bool resultado = true;
             string mensaje = "";
 
             try
             {
-                categoriaBL.GestionarCategoria(categoria);
+                categoriaService.GestionarCategoria(categoria.ToEntity());
             }
             catch(Exception ex)
             {

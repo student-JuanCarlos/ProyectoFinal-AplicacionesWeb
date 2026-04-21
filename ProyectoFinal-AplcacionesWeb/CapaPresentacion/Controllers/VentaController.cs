@@ -1,15 +1,21 @@
-﻿using CapaEntidad;
-using CapaEntidad.Request;
-using CapaNegocio;
+﻿using CapaPresentacion.Models.Extensions;
+using CapaPresentacion.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SistemaLogistico.BussinesLogic.Services;
 
 namespace CapaPresentacion.Controllers
 {
     public class VentaController : Controller
     {
-        VentaBL ventaBL = new VentaBL();
-        ProductoBL productoBL = new ProductoBL();
+        private readonly ProductoService productoService;
+        private readonly VentaService ventaService;
+
+        public VentaController(ProductoService producto, VentaService venta)
+        {
+            productoService = producto;
+            ventaService = venta;
+        }
 
         public IActionResult Index(string Busqueda, string NombreUsuario, bool? Estado)
         {
@@ -19,13 +25,13 @@ namespace CapaPresentacion.Controllers
             }
 
             var json = HttpContext.Session.GetString("Usuario");
-            var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+            var usuario = JsonConvert.DeserializeObject<CapaPresentacion.Models.VM.UsuarioVM>(json);
             ViewBag.Usuario = usuario;
 
-            ViewBag.Productos = productoBL.ListadoConFiltro(null);
-            var listadoVentas = ventaBL.ListadoVentaConFiltro(Busqueda, NombreUsuario, Estado);
+            ViewBag.Productos = productoService.ListadoConFiltro(null).Select(p => p.ToViewModel());
+            var listadoVentas = ventaService.ListadoVentaConFiltro(Busqueda, NombreUsuario, Estado);
 
-            return View(listadoVentas);
+            return View(listadoVentas.Select(v => v.ToViewModel()));
         }
 
         [HttpPost]
@@ -37,10 +43,10 @@ namespace CapaPresentacion.Controllers
             try
             {
                 var json = HttpContext.Session.GetString("Usuario");
-                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+                var usuario = JsonConvert.DeserializeObject<CapaPresentacion.Models.VM.UsuarioVM>(json);
                 request.Venta.IdUsuario = usuario.IdUsuario;
 
-                ventaBL.RegistroVenta(request.Venta, request.Detalles);
+                ventaService.RegistroVenta(request.Venta.ToEntity(), request.Detalles.Select(d => d.ToEntity()).ToList());
             }
             catch(Exception ex)
             {
@@ -60,9 +66,9 @@ namespace CapaPresentacion.Controllers
             try
             {
                 var json = HttpContext.Session.GetString("Usuario");
-                var usuario = JsonConvert.DeserializeObject<CapaEntidad.Usuario>(json);
+                var usuario = JsonConvert.DeserializeObject<CapaPresentacion.Models.VM.UsuarioVM>(json);
 
-                ventaBL.AnularVenta(IdVenta, usuario.IdUsuario);
+                ventaService.AnularVenta(IdVenta, usuario.IdUsuario);
             }
             catch(Exception ex)
             {
@@ -75,7 +81,7 @@ namespace CapaPresentacion.Controllers
 
         public IActionResult DetalleVenta(int id)
         {
-            var ventaBuscada = ventaBL.DetalleVenta(id);
+            var ventaBuscada = ventaService.DetalleVenta(id).ToViewModel();
             return Json(ventaBuscada);
         }
 

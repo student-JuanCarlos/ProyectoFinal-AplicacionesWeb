@@ -9,7 +9,7 @@ namespace CapaPresentacion.Models.VM
 
         public string NombreProducto { get; set; }
 
-        public string Fotografia { get; set; }
+        public IFormFile Fotografia { get; set; }
 
         public string Codigo { get; set; }
 
@@ -32,6 +32,8 @@ namespace CapaPresentacion.Models.VM
         public CategoriaVM categoria { get; set; }
 
         public ProveedorVM proveedor { get; set; }
+
+        public string FotoActual { get; set; }
 
     }
 }

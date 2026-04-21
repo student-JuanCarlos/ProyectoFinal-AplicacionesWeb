@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SistemaLogistico.BussinesLogic.Services;
+using SistemaLogistico.BussinesLogic.Utilidades;
 using SistemaLogistico.Data.Infraestructure;
 using SistemaLogistico.Data.Repository;
 using System;
@@ -21,6 +22,7 @@ namespace SistemaLogistico.BussinesLogic.Inyeccion
             services.AddScoped<DashBoardService>();
 
             services.AddScoped<IMovimientoStock, MovimientoStockRepository>();
+            services.AddScoped<MovimientoStockService>();
             services.AddScoped<DashBoardService>();
 
             services.AddScoped<IProducto, ProductoReposittory>();
@@ -34,6 +36,11 @@ namespace SistemaLogistico.BussinesLogic.Inyeccion
 
             services.AddScoped<IVenta, VentaRepository>();
             services.AddScoped<VentaService>();
+
+            services.AddScoped<IRol, RolRepository>();
+            services.AddScoped<RolService>();
+
+            services.AddScoped<IUtilidades, UtilidadesService>();
         }
 
     }

@@ -1,12 +1,18 @@
-﻿using CapaEntidad;
-using CapaNegocio;
+﻿using CapaPresentacion.Models.Extensions;
+using CapaPresentacion.Models.VM;
 using Microsoft.AspNetCore.Mvc;
+using SistemaLogistico.BussinesLogic.Services;
 
 namespace CapaPresentacion.Controllers
 {
     public class ProveedorController : Controller
     {
-        ProveedorBL proveedorBL = new ProveedorBL();
+        private readonly ProveedorService proveedorService;
+
+        public ProveedorController(ProveedorService proveedor)
+        {
+            proveedorService = proveedor;
+        }
 
         [HttpGet]
         public IActionResult Index(int page = 1, string Busqueda = null)
@@ -16,7 +22,7 @@ namespace CapaPresentacion.Controllers
                 return RedirectToAction("Login", "Usuario");
             }
 
-            var listadoProveedores = proveedorBL.ListadoProveedor(Busqueda);
+            var listadoProveedores = proveedorService.ListadoProveedor(Busqueda);
 
             int registrosPorPagina = 8;
             int totalProductos = listadoProveedores.Count;
@@ -27,18 +33,18 @@ namespace CapaPresentacion.Controllers
             ViewBag.paginas = cantidadPaginas;
             ViewBag.paginaActual = page;
 
-            return View(listadoProveedores.Skip(paginasPorOmitir).Take(registrosPorPagina));
+            return View(listadoProveedores.Select(p => p.ToViewModel()).Skip(paginasPorOmitir).Take(registrosPorPagina));
         }
 
         [HttpPost]
-        public JsonResult GuardarProveedor(Proveedor proveedor)
+        public JsonResult GuardarProveedor(ProveedorVM proveedor)
         {
             bool resultado = true;
             string mensaje = "";
 
             try
             {
-                proveedorBL.GestionarProveedor(proveedor);
+                proveedorService.GestionarProveedor(proveedor.ToEntity());
             }
             catch(Exception ex)
             {
@@ -57,7 +63,7 @@ namespace CapaPresentacion.Controllers
 
             try
             {
-                proveedorBL.CambiarEstadoProveedor(id);
+                proveedorService.CambiarEstadoProveedor(id);
             }
             catch(Exception ex)
             {
@@ -70,7 +76,7 @@ namespace CapaPresentacion.Controllers
 
         public IActionResult DetalleProveedor(int id)
         {
-            var proveedorBuscado = proveedorBL.DetalleProveedor(id);
+            var proveedorBuscado = proveedorService.DetalleProveedor(id).ToViewModel();
             return Json(proveedorBuscado);
         }
     }
