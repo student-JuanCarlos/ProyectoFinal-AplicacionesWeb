@@ -488,13 +488,11 @@
     }
 
     function abrirEdit(id) {
-        console.log('abrirEdit llamado con id:', id);
         fetch(`/Producto/DetalleProducto/${id}`)
             .then(res => res.json())
             .then(data => {
-                console.log('data recibida:', data);
                 document.getElementById('edit-id').value = data.idProducto;
-                document.getElementById('edit-fotoactual').value = data.fotografia;
+                document.getElementById('edit-fotoactual').value = data.fotoActual;
                 document.getElementById('edit-nombre').value = data.nombreProducto;
                 document.getElementById('edit-categoria').value = data.idCategoria;
                 document.getElementById('edit-proveedor').value = data.idProveedor;
