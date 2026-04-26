@@ -95,6 +95,24 @@ CREATE TABLE DetalleVenta(
     SubTotal AS (Cantidad * PrecioUnitario)
 );
 
+CREATE TABLE DetalleDescuento(
+    IdDetalleDescuento INT IDENTITY(1,1) PRIMARY KEY,
+    IdVenta INT NOT NULL FOREIGN KEY REFERENCES Venta(IdVenta),
+    IdDescuento INT NOT NULL FOREIGN KEY REFERENCES Descuento(IdDescuento),
+    PorcentajeAplicado DECIMAL(5,2) NOT NULL 
+);
+
+CREATE TABLE Descuento(
+    IdDescuento INT IDENTITY(1,1) PRIMARY KEY,
+    NombreDescuento VARCHAR(100) NOT NULL,
+    IdProducto INT NULL FOREIGN KEY REFERENCES Producto(IdProducto),
+    TipoDescuento VARCHAR(30) NOT NULL CHECK (TipoDescuento IN ('Total', 'Por producto')),
+    PorcentajeDescuento DECIMAL(5,2) NOT NULL,
+    FechaInicio DATE NOT NULL,
+    FechaFin DATE NOT NULL,
+    Estado BIT DEFAULT 1
+);
+
 ------------------------------------------------------------------------------
 ----------PROCEDIMIENTOS ALMACENADOS DE Usuario
 ------------------------------------------------------------------------------
@@ -809,7 +827,115 @@ BEGIN
     ORDER BY v.FechaVenta DESC
 END
 
+
+------------------------------------------------------------------------------
+----------PROCEDIMIENTOS ALMACENADOS de Descuento
+------------------------------------------------------------------------------
 GO
+CREATE PROC sp_InsertarDescuento
+@NombreDescuento VARCHAR(100),
+@IdProducto INT NULL,
+@TipoDescuento VARCHAR(30),
+@PorcentajeDescuento DECIMAL(5,2),
+@FechaInicio DATE,
+@FechaFin DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Descuento (NombreDescuento, IdProducto, TipoDescuento, PorcentajeDescuento, FechaInicio, FechaFin, Estado)
+    VALUES (@NombreDescuento, @IdProducto, @TipoDescuento, @PorcentajeDescuento, @FechaInicio, @FechaFin, 1)
+END
+
+GO
+CREATE PROC sp_ActualizarDescuento
+@IdDescuento INT,
+@NombreDescuento VARCHAR(100),
+@IdProducto INT NULL,
+@TipoDescuento VARCHAR(30),
+@PorcentajeDescuento DECIMAL(5,2),
+@FechaInicio DATE,
+@FechaFin DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Descuento 
+        SET NombreDescuento = @NombreDescuento, 
+        IdProducto = @IdProducto, 
+        TipoDescuento = @TipoDescuento,
+        PorcentajeDescuento = @PorcentajeDescuento,
+        FechaInicio = @FechaInicio,
+        FechaFin = @FechaFin
+    WHERE IdDescuento = @IdDescuento
+END
+
+GO
+CREATE PROC sp_ListadoDescuento
+@Busqueda VARCHAR(100) = NULL,
+@Estado BIT = NULL
+AS
+BEGIN
+    SELECT 
+        d.IdDescuento,
+        d.NombreDescuento,
+        ISNULL(p.NombreProducto,'Aplica para toda la Venta') AS NombreProducto,
+        d.PorcentajeDescuento,
+        d.FechaFin,
+        d.Estado
+    FROM Descuento d
+    LEFT JOIN Producto p ON p.IdProducto = d.IdProducto
+    WHERE (@Busqueda IS NULL OR d.NombreDescuento LIKE '%'+@Busqueda+'%' OR p.NombreProducto LIKE '%'+@Busqueda+'%') AND
+    (@Estado IS NULL OR d.Estado = @Estado)
+END
+
+GO
+CREATE PROC sp_DetalleDescuento
+@IdDescuento INT 
+AS
+BEGIN
+    SELECT
+        d.IdDescuento,
+        d.NombreDescuento,
+        d.IdProducto,
+        ISNULL(p.NombreProducto, 'Aplica para toda la venta') AS NombreProducto,
+        d.TipoDescuento,
+        d.PorcentajeDescuento,
+        d.FechaInicio,
+        d.FechaFin,
+        d.Estado
+    FROM Descuento d
+    LEFT JOIN Producto p ON p.IdProducto = d.IdProducto
+    WHERE d.IdDescuento = @IdDescuento
+END
+
+GO
+CREATE PROC sp_CambiarEstadoDescuento
+@IdDescuento INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE Descuento 
+    SET Estado = CASE WHEN Estado = 1 THEN 0 ELSE 1 END
+    WHERE IdDescuento = @IdDescuento
+END
+
+GO
+CREATE PROC sp_ListadoDescuentoConFiltro --Para el modal de Registrar Ventas
+@Busqueda VARCHAR(100) = NULL
+AS
+BEGIN
+    SELECT 
+        d.IdDescuento,
+        d.NombreDescuento,
+        p.NombreProducto,
+        d.PorcentajeDescuento,
+        d.FechaFin,
+        d.Estado
+    FROM Descuento d
+    INNER JOIN Producto p ON p.IdProducto = d.IdProducto
+    WHERE (@Busqueda IS NULL OR d.NombreDescuento LIKE '%'+@Busqueda+'%' OR p.NombreProducto LIKE '%'+@Busqueda+'%') AND
+    d.Estado = 1
+END
+
 
 ------------------------------------------------------------------------------
 ----------SELECTS PRINCIPALES

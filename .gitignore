@@ -419,3 +419,6 @@ FodyWeavers.xsd
 
 #AppSettings.Json
 appsettings.json
+
+#Archivo .env
+archivo.env
