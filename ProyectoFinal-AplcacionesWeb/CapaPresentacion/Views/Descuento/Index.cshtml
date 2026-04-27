@@ -543,7 +543,12 @@
         document.getElementById(prefix + '-tipo').value = valor;
 
         const productoField = document.getElementById(prefix + '-productoField');
-        productoField.style.display = valor === 'Por Producto' ? 'block' : 'none';
+        if (valor === 'Por Producto') {
+            productoField.style.display = 'block';
+        } else {
+            productoField.style.display = 'none';
+            document.getElementById(prefix + '-idproducto').value = ''; 
+        }
     }
 
     function guardarDescuento(formId) {

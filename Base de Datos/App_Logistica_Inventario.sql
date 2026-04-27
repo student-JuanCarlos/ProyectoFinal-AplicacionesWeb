@@ -881,6 +881,7 @@ BEGIN
     SELECT 
         d.IdDescuento,
         d.NombreDescuento,
+        d.TipoDescuento,
         d.IdProducto,
         ISNULL(p.NombreProducto,'Aplica para toda la Venta') AS NombreProducto,
         d.PorcentajeDescuento,
@@ -933,6 +934,7 @@ BEGIN
     SELECT 
         d.IdDescuento,
         d.NombreDescuento,
+        d.TipoDescuento,
         d.IdProducto,
         p.NombreProducto,
         d.PorcentajeDescuento,

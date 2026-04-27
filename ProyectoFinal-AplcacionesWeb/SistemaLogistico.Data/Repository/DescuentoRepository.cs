@@ -31,7 +31,7 @@ namespace SistemaLogistico.Data.Repository
                     cmd.CommandText = "sp_ActualizarDescuento";
                     cmd.Parameters.AddWithValue("@IdDescuento", descuento.IdDescuento);
                     cmd.Parameters.AddWithValue("@NombreDescuento", descuento.NombreDescuento);
-                    cmd.Parameters.AddWithValue("@IdProducto", descuento.IdProducto);
+                    cmd.Parameters.AddWithValue("@IdProducto", descuento.IdProducto == 0 ? (object)DBNull.Value : descuento.IdProducto);
                     cmd.Parameters.AddWithValue("@TipoDescuento", descuento.TipoDescuento);
                     cmd.Parameters.AddWithValue("@PorcentajeDescuento", descuento.PorcentajeDescuento);
                     cmd.Parameters.AddWithValue("@FechaInicio", descuento.FechaInicio);
@@ -179,6 +179,7 @@ namespace SistemaLogistico.Data.Repository
                             IdDescuento = Convert.ToInt32(reader["IdDescuento"]),
                             NombreDescuento = reader["NombreDescuento"].ToString(),
                             producto = producto,
+                            TipoDescuento = reader["TipoDescuento"].ToString(),
                             PorcentajeDescuento = Convert.ToDecimal(reader["PorcentajeDescuento"]),
                             FechaFin = fechaFin,
                             ColorCard = reader["ColorCard"].ToString(),
