@@ -1,0 +1,625 @@
+﻿@model IEnumerable<CapaPresentacion.Models.VM.DescuentoVM>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Descuentos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; min-height: 100vh; background: #f5f5f5; font-family: 'Segoe UI', sans-serif; }
+
+        /* ── SIDEBAR ── */
+        #sidebar {
+            width: 250px; min-height: 100vh; background: #000; color: #fff;
+            display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        .sidebar-brand { padding: 1.5rem 1.25rem; border-bottom: 1px solid #222; }
+        .sidebar-brand h5 { font-size: 14px; font-weight: 600; color: #fff; margin: 0; line-height: 1.4; }
+        .sidebar-brand small { font-size: 11px; color: #888; }
+        .sidebar-section { padding: 1rem 1.25rem 0.25rem; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-nav { flex: 1; padding: 0.5rem 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 0.6rem 1.25rem; color: #aaa; text-decoration: none; font-size: 14px; transition: all 0.2s; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: #111; }
+        .sidebar-nav a.active { border-left: 3px solid #fff; }
+        .sidebar-nav a i { font-size: 16px; }
+        .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid #222; }
+        .sidebar-footer a { display: flex; align-items: center; gap: 10px; color: #aaa; text-decoration: none; font-size: 14px; }
+        .sidebar-footer a:hover { color: #fff; }
+
+        #main { margin-left: 250px; flex: 1; padding: 2rem; }
+
+        /* ── HEADER ── */
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .page-title { font-size: 22px; font-weight: 700; color: #111; margin: 0; }
+        .page-subtitle { font-size: 13px; color: #888; margin-top: 2px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
+        .btn-nuevo {
+            background: #000; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: background 0.2s;
+        }
+        .btn-nuevo:hover { background: #222; }
+
+        .search-input {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 14px;
+            font-size: 0.875rem; color: #111; width: 240px; transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        /* ── FILTRO ESTADO ── */
+        .filtro-estado { display: flex; gap: 8px; align-items: center; }
+        .btn-filtro {
+            border: 1px solid #e5e7eb; background: #fff; color: #555; padding: 8px 14px;
+            border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-filtro.active, .btn-filtro:hover { background: #000; color: #fff; border-color: #000; }
+
+        /* ── CARDS GRID ── */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+
+        /* ── DESCUENTO CARD ── */
+        .descuento-card {
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .descuento-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+
+        /* Colores del card */
+        .card-color-rojo      { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .card-color-azul      { background: linear-gradient(135deg, #2980b9, #1a5276); }
+        .card-color-verde     { background: linear-gradient(135deg, #27ae60, #1e8449); }
+        .card-color-amarillo  { background: linear-gradient(135deg, #f1c40f, #d4ac0d); }
+        .card-color-morado    { background: linear-gradient(135deg, #8e44ad, #6c3483); }
+        .card-color-rosado    { background: linear-gradient(135deg, #e91e8c, #c2185b); }
+        .card-color-celeste   { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .card-color-naranja   { background: linear-gradient(135deg, #e67e22, #ca6f1e); }
+        .card-color-blanco    { background: linear-gradient(135deg, #f8f9fa, #e9ecef); }
+
+        .card-header-color {
+            padding: 20px 20px 16px;
+            position: relative;
+        }
+
+        /* Porcentaje grande como elemento visual */
+        .card-porcentaje-bg {
+            position: absolute; top: 10px; right: 14px;
+            font-size: 4rem; font-weight: 900; color: rgba(255,255,255,0.15);
+            line-height: 1; user-select: none; pointer-events: none;
+        }
+        .card-color-blanco .card-porcentaje-bg { color: rgba(0,0,0,0.07); }
+
+        .card-tipo-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+            background: rgba(255,255,255,0.25); color: #fff; margin-bottom: 10px;
+        }
+        .card-color-blanco .card-tipo-badge { background: rgba(0,0,0,0.1); color: #333; }
+        .card-color-amarillo .card-tipo-badge { color: #333; }
+
+        .card-nombre {
+            font-size: 1rem; font-weight: 700; color: #fff; margin: 0;
+            line-height: 1.3;
+        }
+        .card-color-blanco .card-nombre { color: #111; }
+        .card-color-amarillo .card-nombre { color: #333; }
+
+        .card-porcentaje-label {
+            font-size: 1.6rem; font-weight: 900; color: #fff; margin-top: 6px; display: block;
+        }
+        .card-color-blanco .card-porcentaje-label { color: #111; }
+        .card-color-amarillo .card-porcentaje-label { color: #333; }
+
+        /* Cuerpo blanco del card */
+        .card-body-white {
+            background: #fff; padding: 14px 18px;
+        }
+
+        .card-info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.8rem; padding: 4px 0; border-bottom: 1px solid #f3f4f6;
+        }
+        .card-info-row:last-child { border-bottom: none; }
+        .card-info-label { color: #9ca3af; font-weight: 500; }
+        .card-info-value { color: #374151; font-weight: 600; text-align: right; max-width: 60%; }
+
+        .badge-estado { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+        .badge-estado.activo   { background: #d1fae5; color: #065f46; }
+        .badge-estado.inactivo { background: #fee2e2; color: #991b1b; }
+        .badge-estado::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; border-radius: 50%; }
+
+        .badge-vencido { background: #fef3c7; color: #92400e; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+
+        /* Acciones del card */
+        .card-footer-acciones { padding: 10px 16px; border-top: 1px solid #f3f4f6; display: flex; gap: 6px; background: #fff; }
+        .btn-accion { border: none; padding: 6px 0; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; flex: 1; text-align: center; }
+        .btn-accion:hover { opacity: 0.8; }
+        .btn-detalle    { background: #f3f4f6; color: #374151; }
+        .btn-edit       { background: #dbeafe; color: #1d4ed8; }
+        .btn-activar    { background: #d1fae5; color: #065f46; }
+        .btn-desactivar { background: #fee2e2; color: #991b1b; }
+
+        /* ── MODALS ── */
+        .modal-content { border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .modal-header { border-bottom: 1px solid #f3f4f6; padding: 20px 24px 16px; }
+        .modal-title { font-size: 1rem; font-weight: 700; color: #111; }
+        .modal-body { padding: 20px 24px; }
+        .modal-footer { border-top: 1px solid #f3f4f6; padding: 16px 24px; }
+
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 4px; }
+        .form-control, .form-select {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 9px 12px;
+            font-size: 0.875rem; color: #111; width: 100%; transition: border-color 0.2s;
+        }
+        .form-control:focus, .form-select:focus { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.08); outline: none; }
+
+        .btn-cancelar { background: #f3f4f6; color: #374151; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+        .btn-guardar { background: #000; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-guardar:hover { background: #222; }
+
+        /* Selector de colores */
+        .color-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+        .color-option {
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.2s; position: relative;
+        }
+        .color-option:hover { transform: scale(1.15); }
+        .color-option.selected { border-color: #000; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000; }
+        .color-option[data-color="rojo"]     { background: #e74c3c; }
+        .color-option[data-color="azul"]     { background: #2980b9; }
+        .color-option[data-color="verde"]    { background: #27ae60; }
+        .color-option[data-color="amarillo"] { background: #f1c40f; }
+        .color-option[data-color="morado"]   { background: #8e44ad; }
+        .color-option[data-color="rosado"]   { background: #e91e8c; }
+        .color-option[data-color="celeste"]  { background: #00bcd4; }
+        .color-option[data-color="naranja"]  { background: #e67e22; }
+        .color-option[data-color="blanco"]   { background: #e9ecef; border: 1px solid #ddd; }
+
+        /* Detalle modal */
+        .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .detalle-item label { font-size: 0.72rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 3px; }
+        .detalle-item span { font-size: 0.9rem; color: #111; font-weight: 500; }
+        .detalle-porcentaje { font-size: 2rem; font-weight: 900; color: #111; }
+
+        .empty-state { text-align: center; padding: 48px 0; color: #9ca3af; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+
+        /* Tipo descuento toggle */
+        .tipo-toggle { display: flex; gap: 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+        .tipo-btn { flex: 1; padding: 9px 12px; border: none; background: #fff; font-size: 0.8rem; font-weight: 600; color: #6b7280; cursor: pointer; transition: all 0.2s; }
+        .tipo-btn.active { background: #000; color: #fff; }
+
+        #productoField { transition: all 0.3s; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div class="sidebar-brand">
+        <h5>Sistema de Inventario<br />y Ventas</h5>
+        <small>Panel de control</small>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="/Usuario/InicioAdministrador"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <div class="sidebar-section">Gestión</div>
+        @if (User.IsInRole("SuperUser"))
+        {
+            <a href="/Usuario/Index"><i class="bi bi-people"></i> Usuarios</a>
+        }
+        <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
+        @if (User.IsInRole("Administrador") || User.IsInRole("SuperUser"))
+        {
+            <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+            <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+            <a href="/Descuento/Index" class="active"><i class="bi bi-percent"></i> Descuentos</a>
+            <div class="sidebar-section">Inventario & Ventas</div>
+            <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+        }
+        <a href="/Venta/Index"><i class="bi bi-receipt"></i> Ventas</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a asp-action="CerrarSesion" asp-controller="Usuario"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+    </div>
+</div>
+
+<div id="main">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Descuentos</h1>
+            <p class="page-subtitle">Gestión de descuentos por temporada y festividades</p>
+        </div>
+        <div class="header-actions">
+            <form method="get" asp-action="Index" asp-controller="Descuento" class="d-flex gap-2">
+                <input type="text" name="Busqueda" value="@Context.Request.Query["Busqueda"]"
+                       class="search-input" placeholder="Buscar descuento..." />
+                <button type="submit" class="btn-nuevo"><i class="bi bi-search"></i></button>
+            </form>
+            <button class="btn-nuevo" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                <i class="bi bi-plus-lg"></i> Nuevo Descuento
+            </button>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-percent"></i>
+            No se encontraron descuentos
+        </div>
+    }
+    else
+    {
+        <div class="cards-grid">
+            @foreach (var item in Model)
+            {
+                <div class="descuento-card">
+                    <div class="card-header-color card-color-@item.ColorCard">
+                        <div class="card-porcentaje-bg">@item.PorcentajeDescuento.ToString("0")%</div>
+                        <span class="card-tipo-badge">
+                            @(item.TipoDescuento == "Total" ? "Descuento Total" : "Por Producto")
+                        </span>
+                        <p class="card-nombre">@item.NombreDescuento</p>
+                        <span class="card-porcentaje-label">@item.PorcentajeDescuento.ToString("0.##")% OFF</span>
+                    </div>
+                    <div class="card-body-white">
+                        <div class="card-info-row">
+                            <span class="card-info-label"><i class="bi bi-box-seam me-1"></i>Producto</span>
+                            <span class="card-info-value">@(item.producto?.NombreProducto ?? "Aplica a toda la venta")</span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-info-label"><i class="bi bi-calendar-x me-1"></i>Vence</span>
+                            <span class="card-info-value">
+                                @if (item.FechaFin < DateTime.Today)
+                                {
+                                    <span class="badge-vencido">Vencido</span>
+                                }
+                                else
+                                {
+                                    @item.FechaFin.ToString("dd/MM/yyyy")
+                                }
+                            </span>
+                        </div>
+                        <div class="card-info-row">
+                            <span class="card-info-label"><i class="bi bi-circle-fill me-1"></i>Estado</span>
+                            <span class="badge-estado @(item.Estado ? "activo" : "inactivo")">
+                                @(item.Estado ? "Activo" : "Inactivo")
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer-acciones">
+                        <button class="btn-accion btn-detalle"
+                                onclick="abrirDetalle(@item.IdDescuento)"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDetalle">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                        <button class="btn-accion btn-edit"
+                                onclick="abrirEdit(@item.IdDescuento)"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEdit">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                        <button class="btn-accion @(item.Estado ? "btn-desactivar" : "btn-activar")"
+                                onclick="cambiarEstado(@item.IdDescuento)">
+                            @(item.Estado ? "Desactivar" : "Activar")
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-12 d-flex justify-content-center">
+            <nav aria-label="Page Navigation">
+                <ul class="pagination pagination-sm">
+                    @for(int i = 0; i < ViewBag.paginas; i++)
+                    {
+                        <li class="page-item @(ViewBag.paginaActual == (i+1) ? "active" : "")">
+                            <a class="page-link" asp-route-page="@(i+1)" >@(i+1)</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL CREATE ── -->
+<div class="modal fade" id="modalCreate" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Descuento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCreate">
+                    <input type="hidden" name="IdDescuento" value="0" />
+                    <input type="hidden" id="create-color" name="ColorCard" value="azul" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Descuento</label>
+                        <input type="text" name="NombreDescuento" class="form-control" placeholder="Ej: Día de la Madre, Fiestas Patrias..." required />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Tipo de Descuento</label>
+                            <div class="tipo-toggle">
+                                <button type="button" class="tipo-btn active" onclick="setTipo(this, 'Total', 'formCreate')">Total</button>
+                                <button type="button" class="tipo-btn" onclick="setTipo(this, 'Por Producto', 'formCreate')">Por Producto</button>
+                            </div>
+                            <input type="hidden" id="create-tipo" name="TipoDescuento" value="Total" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Porcentaje (%)</label>
+                            <input type="number" step="0.01" min="0.01" max="100" name="PorcentajeDescuento" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="create-productoField" style="display:none;">
+                        <label class="form-label">Producto</label>
+                        <select name="IdProducto" id="create-idproducto" class="form-select">
+                            <option value="">-- Seleccione un producto --</option>
+                            @foreach (var prod in ViewBag.Productos)
+                            {
+                                <option value="@prod.IdProducto">@prod.NombreProducto</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Fecha Inicio</label>
+                            <input type="date" name="FechaInicio" class="form-control" required />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Fecha Fin</label>
+                            <input type="date" name="FechaFin" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color del Card</label>
+                        <div class="color-picker">
+                            <div class="color-option selected" data-color="azul"     onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="rojo"     onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="verde"    onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="amarillo" onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="morado"   onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="rosado"   onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="celeste"  onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="naranja"  onclick="seleccionarColor(this, 'create-color')"></div>
+                            <div class="color-option" data-color="blanco"   onclick="seleccionarColor(this, 'create-color')"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn-guardar" onclick="guardarDescuento('formCreate')">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL EDIT ── -->
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Descuento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEdit">
+                    <input type="hidden" id="edit-id" name="IdDescuento" />
+                    <input type="hidden" id="edit-color" name="ColorCard" value="azul" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Descuento</label>
+                        <input type="text" id="edit-nombre" name="NombreDescuento" class="form-control" required />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Tipo de Descuento</label>
+                            <div class="tipo-toggle">
+                                <button type="button" id="edit-tipo-total" class="tipo-btn active" onclick="setTipo(this, 'Total', 'formEdit')">Total</button>
+                                <button type="button" id="edit-tipo-producto" class="tipo-btn" onclick="setTipo(this, 'Por Producto', 'formEdit')">Por Producto</button>
+                            </div>
+                            <input type="hidden" id="edit-tipo" name="TipoDescuento" value="Total" />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Porcentaje (%)</label>
+                            <input type="number" step="0.01" min="0.01" max="100" id="edit-porcentaje" name="PorcentajeDescuento" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="edit-productoField" style="display:none;">
+                        <label class="form-label">Producto</label>
+                        <select name="IdProducto" id="edit-idproducto" class="form-select">
+                            <option value="">-- Seleccione un producto --</option>
+                            @foreach (var prod in ViewBag.Productos)
+                            {
+                                <option value="@prod.IdProducto">@prod.NombreProducto</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Fecha Inicio</label>
+                            <input type="date" id="edit-fechainicio" name="FechaInicio" class="form-control" required />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Fecha Fin</label>
+                            <input type="date" id="edit-fechafin" name="FechaFin" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color del Card</label>
+                        <div class="color-picker" id="edit-color-picker">
+                            <div class="color-option" data-color="azul"     onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="rojo"     onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="verde"    onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="amarillo" onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="morado"   onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="rosado"   onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="celeste"  onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="naranja"  onclick="seleccionarColor(this, 'edit-color')"></div>
+                            <div class="color-option" data-color="blanco"   onclick="seleccionarColor(this, 'edit-color')"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn-guardar" onclick="guardarDescuento('formEdit')">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL DETALLE ── -->
+<div class="modal fade" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle del Descuento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="detalle-porcentaje" id="detalle-porcentaje"></div>
+                    <div class="text-muted" style="font-size:0.8rem;">de descuento</div>
+                </div>
+                <div class="detalle-grid">
+                    <div class="detalle-item"><label>Nombre</label><span id="detalle-nombre"></span></div>
+                    <div class="detalle-item"><label>Tipo</label><span id="detalle-tipo"></span></div>
+                    <div class="detalle-item"><label>Producto</label><span id="detalle-producto"></span></div>
+                    <div class="detalle-item"><label>Estado</label><span id="detalle-estado"></span></div>
+                    <div class="detalle-item"><label>Fecha Inicio</label><span id="detalle-fechainicio"></span></div>
+                    <div class="detalle-item"><label>Fecha Fin</label><span id="detalle-fechafin"></span></div>
+                    <div class="overflow-hidden"><span id="detalle-color"></span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    function seleccionarColor(el, inputId) {
+        const picker = el.closest('.color-picker');
+        picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById(inputId).value = el.dataset.color;
+    }
+
+    function setTipo(btn, valor, formId) {
+        const form = document.getElementById(formId);
+        form.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const prefix = formId === 'formCreate' ? 'create' : 'edit';
+        document.getElementById(prefix + '-tipo').value = valor;
+
+        const productoField = document.getElementById(prefix + '-productoField');
+        productoField.style.display = valor === 'Por Producto' ? 'block' : 'none';
+    }
+
+    function guardarDescuento(formId) {
+        const form = document.getElementById(formId);
+        const formData = new FormData(form);
+
+        fetch('/Descuento/GestionarDescuento', {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (res.resultado) {
+                location.reload();
+            } else {
+                alert('Error: ' + res.mensaje);
+            }
+        });
+    }
+
+    function abrirDetalle(id) {
+        fetch(`/Descuento/DetalleDescuento/${id}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('detalle-porcentaje').textContent = data.porcentajeDescuento + '%';
+                document.getElementById('detalle-nombre').textContent = data.nombreDescuento;
+                document.getElementById('detalle-tipo').textContent = data.tipoDescuento;
+                document.getElementById('detalle-producto').textContent = data.producto?.nombreProducto ?? 'Aplica a toda la venta';
+                document.getElementById('detalle-estado').textContent = data.estado ? 'Activo' : 'Inactivo';
+                document.getElementById('detalle-fechainicio').textContent = new Date(data.fechaInicio).toLocaleDateString('es-PE');
+                document.getElementById('detalle-fechafin').textContent = new Date(data.fechaFin).toLocaleDateString('es-PE');
+                document.getElementById('detalle-color').textContent = data.colorCard;
+            });
+    }
+
+    function abrirEdit(id) {
+        fetch(`/Descuento/DetalleDescuento/${id}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('edit-id').value = data.idDescuento;
+                document.getElementById('edit-nombre').value = data.nombreDescuento;
+                document.getElementById('edit-porcentaje').value = data.porcentajeDescuento;
+                document.getElementById('edit-tipo').value = data.tipoDescuento;
+                document.getElementById('edit-fechainicio').value = data.fechaInicio?.substring(0, 10);
+                document.getElementById('edit-fechafin').value = data.fechaFin?.substring(0, 10);
+
+                if (data.tipoDescuento === 'Por Producto') {
+                    document.getElementById('edit-tipo-total').classList.remove('active');
+                    document.getElementById('edit-tipo-producto').classList.add('active');
+                    document.getElementById('edit-productoField').style.display = 'block';
+                    document.getElementById('edit-idproducto').value = data.idProducto;
+                } else {
+                    document.getElementById('edit-tipo-total').classList.add('active');
+                    document.getElementById('edit-tipo-producto').classList.remove('active');
+                    document.getElementById('edit-productoField').style.display = 'none';
+                }
+
+                document.getElementById('edit-color').value = data.colorCard;
+                const picker = document.getElementById('edit-color-picker');
+                picker.querySelectorAll('.color-option').forEach(o => {
+                    o.classList.toggle('selected', o.dataset.color === data.colorCard);
+                });
+            });
+    }
+
+    function cambiarEstado(id) {
+        if (!confirm('¿Deseas cambiar el estado de este descuento?')) return;
+        fetch(`/Descuento/CambiarEstadoDescuento/${id}`, {
+            method: 'POST'
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (res.resultado) location.reload();
+            else alert('Error: ' + res.mensaje);
+        });
+    }
+</script>
+</body>
+</html>

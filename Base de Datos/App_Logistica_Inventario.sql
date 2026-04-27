@@ -110,6 +110,7 @@ CREATE TABLE Descuento(
     PorcentajeDescuento DECIMAL(5,2) NOT NULL,
     FechaInicio DATE NOT NULL,
     FechaFin DATE NOT NULL,
+    ColorCard VARCHAR(30) NULL DEFAULT 'White',
     Estado BIT DEFAULT 1
 );
 
@@ -834,27 +835,29 @@ END
 GO
 CREATE PROC sp_InsertarDescuento
 @NombreDescuento VARCHAR(100),
-@IdProducto INT NULL,
+@IdProducto INT = NULL,
 @TipoDescuento VARCHAR(30),
 @PorcentajeDescuento DECIMAL(5,2),
 @FechaInicio DATE,
-@FechaFin DATE
+@FechaFin DATE,
+@ColorCard VARCHAR(30)
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Descuento (NombreDescuento, IdProducto, TipoDescuento, PorcentajeDescuento, FechaInicio, FechaFin, Estado)
-    VALUES (@NombreDescuento, @IdProducto, @TipoDescuento, @PorcentajeDescuento, @FechaInicio, @FechaFin, 1)
+    INSERT INTO Descuento (NombreDescuento, IdProducto, TipoDescuento, PorcentajeDescuento, FechaInicio, FechaFin, ColorCard, Estado)
+    VALUES (@NombreDescuento, @IdProducto, @TipoDescuento, @PorcentajeDescuento, @FechaInicio, @FechaFin, @ColorCard, 1)
 END
 
 GO
 CREATE PROC sp_ActualizarDescuento
 @IdDescuento INT,
 @NombreDescuento VARCHAR(100),
-@IdProducto INT NULL,
+@IdProducto INT = NULL,
 @TipoDescuento VARCHAR(30),
 @PorcentajeDescuento DECIMAL(5,2),
 @FechaInicio DATE,
-@FechaFin DATE
+@FechaFin DATE,
+@ColorCard VARCHAR(30)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -864,7 +867,8 @@ BEGIN
         TipoDescuento = @TipoDescuento,
         PorcentajeDescuento = @PorcentajeDescuento,
         FechaInicio = @FechaInicio,
-        FechaFin = @FechaFin
+        FechaFin = @FechaFin,
+        ColorCard = @ColorCard
     WHERE IdDescuento = @IdDescuento
 END
 
@@ -877,9 +881,11 @@ BEGIN
     SELECT 
         d.IdDescuento,
         d.NombreDescuento,
+        d.IdProducto,
         ISNULL(p.NombreProducto,'Aplica para toda la Venta') AS NombreProducto,
         d.PorcentajeDescuento,
         d.FechaFin,
+        d.ColorCard,
         d.Estado
     FROM Descuento d
     LEFT JOIN Producto p ON p.IdProducto = d.IdProducto
@@ -901,6 +907,7 @@ BEGIN
         d.PorcentajeDescuento,
         d.FechaInicio,
         d.FechaFin,
+        d.ColorCard,
         d.Estado
     FROM Descuento d
     LEFT JOIN Producto p ON p.IdProducto = d.IdProducto
@@ -926,9 +933,11 @@ BEGIN
     SELECT 
         d.IdDescuento,
         d.NombreDescuento,
+        d.IdProducto,
         p.NombreProducto,
         d.PorcentajeDescuento,
         d.FechaFin,
+        d.ColorCard,
         d.Estado
     FROM Descuento d
     INNER JOIN Producto p ON p.IdProducto = d.IdProducto
@@ -948,6 +957,7 @@ SELECT * FROM MovimientosStock
 SELECT * FROM Rol
 SELECT * FROM Categoria
 SELECT * FROM Proveedor
+SELECT * FROM Descuento
 
 --------------------------INSERCIONES----------------------------------------
 INSERT INTO Rol(NombreRol) VALUES('SuperUser')

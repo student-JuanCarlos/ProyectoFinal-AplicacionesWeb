@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SistemaLogistico.Entities;
 
-namespace SistemaLogistico.Entities
+namespace CapaPresentacion.Models.VM
 {
-    public class Descuento
+    public class DescuentoVM
     {
 
         public int IdDescuento { get; set; }
@@ -19,13 +17,13 @@ namespace SistemaLogistico.Entities
 
         public DateTime FechaInicio { get; set; }
 
-        public DateTime FechaFin {  get; set; }
+        public DateTime FechaFin { get; set; }
 
         public string ColorCard { get; set; }
 
         public bool Estado { get; set; }
 
-        public Producto producto { get; set; }
+        public ProductoVM producto { get; set; }
 
     }
 }

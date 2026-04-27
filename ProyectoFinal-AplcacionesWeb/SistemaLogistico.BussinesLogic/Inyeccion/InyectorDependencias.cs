@@ -40,6 +40,9 @@ namespace SistemaLogistico.BussinesLogic.Inyeccion
             services.AddScoped<IRol, RolRepository>();
             services.AddScoped<RolService>();
 
+            services.AddScoped<IDescuento, DescuentoRepository>();
+            services.AddScoped<DescuentoService>();
+
             services.AddScoped<IUtilidades, UtilidadesService>();
         }
 
