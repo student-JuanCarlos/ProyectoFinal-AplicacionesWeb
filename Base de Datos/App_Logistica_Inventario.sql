@@ -443,7 +443,7 @@ CREATE TYPE TVP_DetalleDescuento AS TABLE(
     IdDescuento INT NULL,
     PorcentajeAplicado DECIMAL(5,2) NULL
 );
-GO
+GO 
 CREATE PROC sp_RegistrarVenta
 @Cliente VARCHAR(60),
 @DocumentoCliente VARCHAR(20),
@@ -508,6 +508,7 @@ BEGIN
         INSERT INTO DetalleDescuento(IdVenta, IdDescuento, PorcentajeAplicado)
         SELECT @IdVenta, de.IdDescuento, de.PorcentajeAplicado
         FROM @Descuento de
+        WHERE de.IdDescuento IS NOT NULL
 
         UPDATE p
         SET p.StockActual = p.StockActual - d.Cantidad
@@ -589,6 +590,7 @@ BEGIN
     dd.PorcentajeAplicado
     FROM DetalleDescuento dd
     INNER JOIN Descuento d ON d.IdDescuento = dd.IdDescuento
+    WHERE dd.IdVenta = @IdVenta
 END
 
 GO
@@ -996,6 +998,7 @@ END
 ------------------------------------------------------------------------------
 SELECT * FROM Venta
 SELECT * FROM DetalleVenta
+SELECT * FROM DetalleDescuento
 SELECT * FROM Producto
 SELECT * FROM Usuario
 SELECT * FROM MovimientosStock
