@@ -24,7 +24,26 @@ namespace CapaPresentacion.Models.Extensions
                 {
                     IdUsuario = venta.IdUsuario,
                     NombreUsuario = venta.usuario.NombreUsuario
-                }
+                },
+                Detalles = venta.Detalles?.Select(d => new DetalleVentaVM()
+                {
+                    producto = new ProductoVM()
+                    {
+                        NombreProducto = d.producto.NombreProducto
+                    },
+                    Cantidad = d.Cantidad,
+                    PrecioUnitario = d.PrecioUnitario,
+                    SubTotal = d.SubTotal
+                }).ToList(),
+                Descuentos = venta.Descuentos?.Select(d => new DetalleDescuentoVM()
+                {
+                    Descuento = new DescuentoVM()
+                    {
+                        NombreDescuento = d.Descuento.NombreDescuento,
+                        TipoDescuento = d.Descuento.TipoDescuento
+                    },
+                    PorcentajeAplicado = d.PorcentajeAplicado
+                }).ToList()
             };
         }
 

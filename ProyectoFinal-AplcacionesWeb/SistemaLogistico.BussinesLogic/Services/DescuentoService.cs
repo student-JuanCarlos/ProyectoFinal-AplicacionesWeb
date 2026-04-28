@@ -23,9 +23,9 @@ namespace SistemaLogistico.BussinesLogic.Services
                 return descuentoDB.Actualizar(descuento);
         }
 
-        public List<Descuento> ListadoDescuento(string Busqueda)
+        public List<Descuento> ListadoDescuento(string Busqueda, bool? Estado)
         {
-            return descuentoDB.Listado(Busqueda);
+            return descuentoDB.Listado(Busqueda, Estado);
         }
 
         public List<Descuento> ListadoDescuentoConFiltro(string Busqueda)

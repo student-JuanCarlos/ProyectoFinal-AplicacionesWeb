@@ -1,4 +1,5 @@
 ﻿using CapaPresentacion.Models.VM;
+using SistemaLogistico.Entities;
 
 namespace CapaPresentacion.Models.Request
 {
@@ -7,6 +8,8 @@ namespace CapaPresentacion.Models.Request
         public VentaVM Venta { get; set; }
 
         public List<DetalleVentaVM> Detalles { get; set; }
+
+        public List<DetalleDescuentoVM> Descuentos { get; set; }
 
     }
 }

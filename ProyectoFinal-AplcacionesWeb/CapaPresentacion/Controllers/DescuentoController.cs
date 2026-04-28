@@ -17,12 +17,12 @@ namespace CapaPresentacion.Controllers
             productoService = producto;
         }
 
-        public IActionResult Index(int page = 1, string Busqueda = null)
+        public IActionResult Index(int page = 1, bool? Estado = null, string Busqueda = null)
         {
             if(HttpContext.Session.GetString("Usuario") == null)
                 return RedirectToAction("Login", "Usuario");
             
-            var listadoDescuento = descuentoService.ListadoDescuento(Busqueda).Select(d => d.ToViewModel()).ToList();
+            var listadoDescuento = descuentoService.ListadoDescuento(Busqueda, Estado).Select(d => d.ToViewModel()).ToList();
             ViewBag.Productos = productoService.ListadoProducto(null).Select(p => p.ToViewModel()).ToList();
 
             int registrosPorPagina = 8;

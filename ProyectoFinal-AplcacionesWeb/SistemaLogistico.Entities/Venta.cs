@@ -29,5 +29,7 @@ namespace SistemaLogistico.Entities
 
         public List<DetalleVenta> Detalles { get; set; }
 
+        public List<DetalleDescuento> Descuentos { get; set; }
+
     }
 }

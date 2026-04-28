@@ -151,8 +151,9 @@ namespace SistemaLogistico.Data.Repository
             return descuento;
         }
 
-        public List<Descuento> Listado(string Busqueda)
+        public List<Descuento> Listado(string Busqueda, bool? Estado)
         {
+
             var listado = new List<Descuento>();
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
@@ -163,6 +164,7 @@ namespace SistemaLogistico.Data.Repository
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "sp_ListadoDescuento";
                     cmd.Parameters.AddWithValue("@Busqueda", string.IsNullOrEmpty(Busqueda) ? (object)DBNull.Value : Busqueda);
+                    cmd.Parameters.AddWithValue("@Estado", Estado == null ? (object)DBNull.Value : Estado);
                     cn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -187,7 +189,7 @@ namespace SistemaLogistico.Data.Repository
                         });
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -237,5 +239,12 @@ namespace SistemaLogistico.Data.Repository
             }
             return listado;
         }
+
+        #region
+        public List<Descuento> Listado(string Busqueda)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

@@ -18,13 +18,14 @@ namespace SistemaLogistico.Data.Repository
             cadenaConexion = config["ConnectionStrings:Database"] ?? string.Empty;
         }
 
-        public int RegistrarVenta(Venta venta, List<DetalleVenta> detalles)
+        public int RegistrarVenta(Venta venta, List<DetalleVenta> detalles, List<DetalleDescuento> descuentos)
         {
             int f = 0;
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 try
                 {
+                    //TVP de DetalleVenta
                     DataTable dt = new DataTable();
                     dt.Columns.Add("IdProducto", typeof(int));
                     dt.Columns.Add("Cantidad", typeof(int));
@@ -32,6 +33,16 @@ namespace SistemaLogistico.Data.Repository
                     foreach (var d in detalles)
                     {
                         dt.Rows.Add(d.IdProducto, d.Cantidad);
+                    }
+
+                    //TVP de DetalleDescuentos
+                    DataTable dtdescuentos = new DataTable();
+                    dtdescuentos.Columns.Add("IdDescuento", typeof(int));
+                    dtdescuentos.Columns.Add("PorcentajeAplicado", typeof(decimal));
+
+                    foreach (var des in descuentos)
+                    {
+                        dtdescuentos.Rows.Add(des.IdDescuento, des.PorcentajeAplicado);
                     }
 
                     SqlCommand cmd = new SqlCommand();
@@ -47,6 +58,10 @@ namespace SistemaLogistico.Data.Repository
                     SqlParameter tvp = cmd.Parameters.AddWithValue("@Detalle", dt);
                     tvp.SqlDbType = SqlDbType.Structured;
                     tvp.TypeName = "TVP_DetalleVenta";
+
+                    SqlParameter tvpdes = cmd.Parameters.AddWithValue("@Descuento", dtdescuentos);
+                    tvpdes.SqlDbType = SqlDbType.Structured;
+                    tvpdes.TypeName = "TVP_DetalleDescuento";
 
                     cn.Open();
                     f = cmd.ExecuteNonQuery();
@@ -119,7 +134,8 @@ namespace SistemaLogistico.Data.Repository
                             Total = Convert.ToDecimal(reader["Total"]),
                             Estado = Convert.ToBoolean(reader["Estado"]),
                             usuario = usuario,
-                            Detalles = new List<DetalleVenta>()
+                            Detalles = new List<DetalleVenta>(),
+                            Descuentos = new List<DetalleDescuento>()
                         };
 
                         reader.NextResult();
@@ -139,6 +155,19 @@ namespace SistemaLogistico.Data.Repository
                             });
                         }
 
+                        reader.NextResult();
+                        while (reader.Read())
+                        {
+                            venta.Descuentos.Add(new DetalleDescuento
+                            {
+                                Descuento = new Descuento()
+                                {
+                                    NombreDescuento = reader["NombreDescuento"]?.ToString() ?? "",
+                                    TipoDescuento = reader["TipoDescuento"]?.ToString() ?? ""
+                                },
+                                PorcentajeAplicado = reader["PorcentajeAplicado"] != DBNull.Value ? Convert.ToDecimal(reader["PorcentajeAplicado"]) :0,
+                            });
+                        }
                     }
                 }
                 catch (Exception ex)

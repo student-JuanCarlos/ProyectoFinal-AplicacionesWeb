@@ -7,7 +7,7 @@ namespace SistemaLogistico.Data.Infraestructure
 {
     public interface IVenta: IGeneric<Venta>
     {
-        public int RegistrarVenta(Venta venta, List<DetalleVenta> detalles);
+        public int RegistrarVenta(Venta venta, List<DetalleVenta> detalles, List<DetalleDescuento> descuentos);
 
         public int AnularVenta(int IdVenta, int IdUsuario);
 

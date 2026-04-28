@@ -9,5 +9,7 @@ namespace SistemaLogistico.Data.Infraestructure
     {
         public List<Descuento> ListadoConFiltro(string Busqueda);
 
+        public List<Descuento> Listado(string Busqueda, bool? Estado);
+
     }
 }

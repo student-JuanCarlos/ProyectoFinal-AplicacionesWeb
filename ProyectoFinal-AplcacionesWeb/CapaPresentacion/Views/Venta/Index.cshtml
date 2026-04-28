@@ -80,7 +80,6 @@
         .empty-state { text-align: center; padding: 48px 0; color: #9ca3af; }
         .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
 
-        /* Modales */
         .modal-content { border: none; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
         .modal-header { border-bottom: 1px solid #f3f4f6; padding: 20px 24px 16px; }
         .modal-title { font-size: 1rem; font-weight: 700; color: #111; }
@@ -98,7 +97,7 @@
         .btn-guardar  { background: #000; color: #fff; border: none; padding: 9px 18px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .btn-guardar:hover { background: #222; }
 
-        /* Tienda */
+        /* ── TIENDA ── */
         .productos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
         .producto-tile {
             border: 2px solid #e5e7eb; border-radius: 10px; padding: 12px; cursor: pointer;
@@ -113,7 +112,28 @@
         .stock-ok  { color: #065f46; }
         .stock-low { color: #991b1b; }
 
-        /* Carrito */
+        /* ── BOTONES ACCION MODAL ── */
+        .botones-accion-venta { display: flex; gap: 10px; margin-bottom: 12px; }
+
+        .btn-abrir-tienda {
+            background: #f0fdf4; color: #065f46; border: 2px dashed #86efac;
+            border-radius: 8px; padding: 10px 16px; font-size: 0.875rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 8px; flex: 1;
+            justify-content: center;
+        }
+        .btn-abrir-tienda:hover { background: #dcfce7; }
+
+        .btn-abrir-descuentos {
+            background: #fffbeb; color: #92400e; border: 2px dashed #fcd34d;
+            border-radius: 8px; padding: 10px 16px; font-size: 0.875rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 8px; flex: 1;
+            justify-content: center;
+        }
+        .btn-abrir-descuentos:hover { background: #fef3c7; }
+
+        /* ── CARRITO ── */
         .carrito-tabla { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 16px; }
         .carrito-tabla thead th { padding: 8px 10px; text-align: left; font-size: 0.72rem; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
         .carrito-tabla tbody td { padding: 8px 10px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
@@ -122,9 +142,95 @@
         .cantidad-input { width: 60px; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 8px; font-size: 0.82rem; text-align: center; }
         .btn-quitar { background: #fee2e2; color: #991b1b; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
 
-        .total-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 0; border-top: 2px solid #e5e7eb; margin-top: 8px; }
-        .total-label { font-size: 0.9rem; font-weight: 600; color: #374151; }
-        .total-valor { font-size: 1.2rem; font-weight: 700; color: #111; }
+        /* ── DESCUENTOS APLICADOS ── */
+        .descuentos-section { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e7eb; }
+        .descuentos-section-titulo { font-size: 0.75rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+        .descuento-aplicado-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 12px; border-radius: 8px; margin-bottom: 6px;
+            background: #f9fafb; border: 1px solid #e5e7eb;
+        }
+        .descuento-color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .dot-rojo     { background: #e74c3c; }
+        .dot-azul     { background: #2980b9; }
+        .dot-verde    { background: #27ae60; }
+        .dot-amarillo { background: #f1c40f; border: 1px solid #d4ac0d; }
+        .dot-morado   { background: #8e44ad; }
+        .dot-rosado   { background: #e91e8c; }
+        .dot-celeste  { background: #00bcd4; }
+        .dot-naranja  { background: #e67e22; }
+        .dot-blanco   { background: #e9ecef; border: 1px solid #ddd; }
+
+        .descuento-aplicado-info { flex: 1; }
+        .descuento-aplicado-nombre { font-size: 0.82rem; font-weight: 600; color: #111; }
+        .descuento-aplicado-detalle { font-size: 0.72rem; color: #9ca3af; }
+        .descuento-aplicado-porcentaje { font-size: 0.85rem; font-weight: 700; color: #e74c3c; }
+        .btn-quitar-descuento { background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 0.9rem; padding: 0 4px; transition: color 0.15s; }
+        .btn-quitar-descuento:hover { color: #e74c3c; }
+
+        /* ── TOTAL BAR ── */
+        .total-bar { padding: 12px 0 0; border-top: 2px solid #e5e7eb; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+        .total-row { display: flex; justify-content: space-between; align-items: center; }
+        .total-label { font-size: 0.88rem; font-weight: 600; color: #374151; }
+        .total-valor { font-size: 1rem; font-weight: 700; color: #111; }
+        .total-row.total-final .total-label { font-size: 1rem; color: #111; }
+        .total-row.total-final .total-valor { font-size: 1.2rem; }
+        .total-row.total-descuento .total-label,
+        .total-row.total-descuento .total-valor { color: #e74c3c; }
+
+        /* ── DESCUENTOS GRID MODAL ── */
+        .descuentos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+
+        .descuento-tile {
+            border-radius: 12px; overflow: hidden; cursor: pointer;
+            border: 3px solid transparent; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .descuento-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .descuento-tile.seleccionado { border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.15); }
+
+        .descuento-tile .check-overlay {
+            display: none; position: absolute; top: 8px; right: 8px;
+            background: #000; color: #fff; border-radius: 50%;
+            width: 22px; height: 22px; align-items: center; justify-content: center; font-size: 0.75rem;
+        }
+        .descuento-tile.seleccionado .check-overlay { display: flex; }
+
+        .tile-header { padding: 12px 12px 8px; position: relative; }
+        .tile-porcentaje-bg {
+            position: absolute; top: 4px; right: 8px;
+            font-size: 2.5rem; font-weight: 900; color: rgba(255,255,255,0.15);
+            line-height: 1; pointer-events: none; user-select: none;
+        }
+        .tile-tipo-badge {
+            display: inline-block; padding: 2px 7px; border-radius: 20px;
+            font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+            background: rgba(255,255,255,0.25); color: #fff; margin-bottom: 4px;
+        }
+        .tile-nombre { font-size: 0.82rem; font-weight: 700; color: #fff; margin: 0; line-height: 1.3; }
+        .tile-porcentaje { font-size: 1.2rem; font-weight: 900; color: #fff; margin-top: 2px; display: block; }
+        .tile-body { background: #fff; padding: 7px 10px; font-size: 0.73rem; color: #6b7280; }
+        .tile-body span { font-weight: 600; color: #374151; }
+
+        /* Colores tiles */
+        .tile-color-rojo      { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .tile-color-azul      { background: linear-gradient(135deg, #2980b9, #1a5276); }
+        .tile-color-verde     { background: linear-gradient(135deg, #27ae60, #1e8449); }
+        .tile-color-amarillo  { background: linear-gradient(135deg, #f1c40f, #d4ac0d); }
+        .tile-color-morado    { background: linear-gradient(135deg, #8e44ad, #6c3483); }
+        .tile-color-rosado    { background: linear-gradient(135deg, #e91e8c, #c2185b); }
+        .tile-color-celeste   { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .tile-color-naranja   { background: linear-gradient(135deg, #e67e22, #ca6f1e); }
+        .tile-color-blanco    { background: linear-gradient(135deg, #f8f9fa, #e9ecef); }
+        .tile-color-amarillo .tile-nombre,
+        .tile-color-amarillo .tile-porcentaje,
+        .tile-color-blanco .tile-nombre,
+        .tile-color-blanco .tile-porcentaje { color: #333; }
+        .tile-color-amarillo .tile-tipo-badge,
+        .tile-color-blanco .tile-tipo-badge { color: #555; background: rgba(0,0,0,0.1); }
+        .tile-color-amarillo .tile-porcentaje-bg,
+        .tile-color-blanco .tile-porcentaje-bg { color: rgba(0,0,0,0.07); }
 
         /* Detalle venta modal */
         .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
@@ -135,13 +241,6 @@
         .detalle-productos-tabla thead th { padding: 8px 10px; text-align: left; font-size: 0.72rem; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
         .detalle-productos-tabla tbody td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
         .detalle-productos-tabla tbody tr:last-child td { border-bottom: none; }
-
-        .btn-abrir-tienda {
-            background: #f0fdf4; color: #065f46; border: 2px dashed #86efac;
-            border-radius: 8px; padding: 10px; width: 100%; font-size: 0.875rem;
-            font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
-        }
-        .btn-abrir-tienda:hover { background: #dcfce7; }
     </style>
 </head>
 <body>
@@ -162,11 +261,11 @@
         <a href="/Producto/Index"><i class="bi bi-box-seam"></i> Productos</a>
         @if (User.IsInRole("Administrador") || User.IsInRole("SuperUser"))
         {
-           <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
-           <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
-           <a href="/Descuento/Index"><i class="bi bi-percent"></i>Descuentos</a>
-           <div class="sidebar-section">Inventario & Ventas</div>
-           <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
+            <a href="/Categoria/Index"><i class="bi bi-tags"></i> Categorías</a>
+            <a href="/Proveedor/Index"><i class="bi bi-truck"></i> Proveedores</a>
+            <a href="/Descuento/Index"><i class="bi bi-percent"></i> Descuentos</a>
+            <div class="sidebar-section">Inventario & Ventas</div>
+            <a href="/MovimientoStock/Index"><i class="bi bi-arrow-left-right"></i> Mov. de Stock</a>
         }
         <a href="/Venta/Index" class="active"><i class="bi bi-receipt"></i> Ventas</a>
     </nav>
@@ -250,7 +349,6 @@
                                     </button>
                                     @{
                                         bool tienePermiso = User.IsInRole("Administrador") || User.IsInRole("SuperUser");
-
                                     }
                                     @if (item.Estado && (tienePermiso || ViewBag.Usuario.IdUsuario == item.IdUsuario))
                                     {
@@ -268,7 +366,7 @@
     </div>
 </div>
 
-<!-- Modal Nueva Venta -->
+<!-- ── MODAL NUEVA VENTA ── -->
 <div class="modal fade" id="modalCreate" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -277,7 +375,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="limpiarVenta()"></button>
             </div>
             <div class="modal-body">
-                <!-- Datos del cliente -->
                 <div class="row mb-3">
                     <div class="col-4">
                         <label class="form-label">Cliente</label>
@@ -289,7 +386,7 @@
                     </div>
                     <div class="col-4">
                         <label class="form-label">Teléfono</label>
-                        <input type="text" id="v-telefono" class="form-control"/>
+                        <input type="text" id="v-telefono" class="form-control" />
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -305,12 +402,15 @@
                     </div>
                 </div>
 
-                <!-- Botón abrir tienda -->
-                <button class="btn-abrir-tienda" onclick="abrirTienda()">
-                    <i class="bi bi-shop"></i> Agregar productos
-                </button>
+                <div class="botones-accion-venta">
+                    <button class="btn-abrir-tienda" onclick="abrirTienda()">
+                        <i class="bi bi-shop"></i> Agregar productos
+                    </button>
+                    <button class="btn-abrir-descuentos" onclick="abrirDescuentos()">
+                        <i class="bi bi-percent"></i> Agregar descuentos
+                    </button>
+                </div>
 
-                <!-- Carrito -->
                 <div id="carrito-container" style="display:none;">
                     <table class="carrito-tabla">
                         <thead>
@@ -324,9 +424,27 @@
                         </thead>
                         <tbody id="carrito-body"></tbody>
                     </table>
+
+                    <div id="descuentos-section" class="descuentos-section" style="display:none;">
+                        <div class="descuentos-section-titulo">
+                            <i class="bi bi-percent"></i> Descuentos aplicados
+                        </div>
+                        <div id="descuentos-lista"></div>
+                    </div>
+
                     <div class="total-bar">
-                        <span class="total-label">Total</span>
-                        <span class="total-valor" id="carrito-total">S/ 0.00</span>
+                        <div class="total-row">
+                            <span class="total-label">Subtotal</span>
+                            <span class="total-valor" id="carrito-subtotal">S/ 0.00</span>
+                        </div>
+                        <div class="total-row total-descuento" id="row-descuento" style="display:none;">
+                            <span class="total-label"><i class="bi bi-percent"></i> Descuento</span>
+                            <span class="total-valor" id="carrito-descuento">- S/ 0.00</span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span class="total-label">Total</span>
+                            <span class="total-valor" id="carrito-total">S/ 0.00</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -338,7 +456,7 @@
     </div>
 </div>
 
-<!-- Modal Tienda -->
+<!-- ── MODAL TIENDA ── -->
 <div class="modal fade" id="modalTienda" tabindex="-1" style="z-index: 1060;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -356,7 +474,6 @@
                              data-nombre="@prod.NombreProducto"
                              data-precio="@prod.PrecioVendido"
                              data-stock="@prod.StockActual"
-                             data-foto="@prod.Fotografia"
                              onclick="seleccionarProducto(this)">
                             @if (!string.IsNullOrEmpty(prod.FotoActual))
                             {
@@ -386,7 +503,58 @@
     </div>
 </div>
 
-<!-- Modal Detalle Venta -->
+<!-- ── MODAL DESCUENTOS ── -->
+<div class="modal fade" id="modalDescuentos" tabindex="-1" style="z-index: 1060;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-percent"></i> Seleccionar Descuentos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="descuento-busqueda" class="form-control mb-3"
+                       placeholder="Buscar descuento..." oninput="filtrarDescuentosTienda()" />
+                <div class="descuentos-grid" id="descuentos-grid">
+                    @foreach (var desc in ViewBag.Descuentos)
+                    {
+                        <div class="descuento-tile tile-color-@desc.ColorCard"
+                             data-id="@desc.IdDescuento"
+                             data-nombre="@desc.NombreDescuento"
+                             data-porcentaje="@desc.PorcentajeDescuento"
+                             data-tipo="@desc.TipoDescuento"
+                             data-color="@desc.ColorCard"
+                             data-producto="@(desc.producto?.NombreProducto ?? "Aplica a toda la venta")"
+                             onclick="toggleDescuento(this)">
+                            <div class="check-overlay"><i class="bi bi-check"></i></div>
+                            <div class="tile-header tile-color-@desc.ColorCard">
+                                <div class="tile-porcentaje-bg">@desc.PorcentajeDescuento.ToString("0")%</div>
+                                <span class="tile-tipo-badge">
+                                    @(desc.TipoDescuento == "Total" ? "Total" : "Por Producto")
+                                </span>
+                                <p class="tile-nombre">@desc.NombreDescuento</p>
+                                <span class="tile-porcentaje">@desc.PorcentajeDescuento.ToString("0.##")% OFF</span>
+                            </div>
+                            <div class="tile-body">
+                                Aplica a: <span>@(desc.producto?.NombreProducto ?? "Toda la venta")</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div id="descuentos-empty" style="display:none; text-align:center; padding:32px 0; color:#9ca3af;">
+                    <i class="bi bi-percent" style="font-size:2rem; display:block; margin-bottom:8px;"></i>
+                    No hay descuentos activos disponibles
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-guardar" data-bs-dismiss="modal">
+                    <i class="bi bi-check-lg"></i> Listo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL DETALLE VENTA ── -->
 <div class="modal fade" id="modalDetalle" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -416,9 +584,21 @@
                     </thead>
                     <tbody id="d-detalles"></tbody>
                 </table>
+                <table class="detalle-productos-tabla">
+                    <thead>
+                        <tr>
+                            <th>Descuento</th>
+                            <th>Tipo de Descuento</th>
+                            <th>Porcentaje Aplicado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="d-descuentos"></tbody>
+                </table>
                 <div class="total-bar">
-                    <span class="total-label">Total</span>
-                    <span class="total-valor" id="d-total"></span>
+                    <div class="total-row total-final">
+                        <span class="total-label">Total</span>
+                        <span class="total-valor" id="d-total"></span>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -433,11 +613,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let carrito = [];
+    let descuentosSeleccionados = [];
 
     function abrirTienda() {
         const tienda = new bootstrap.Modal(document.getElementById('modalTienda'));
         tienda.show();
-        // marcar tiles ya en carrito
         document.querySelectorAll('.producto-tile').forEach(tile => {
             const id = parseInt(tile.dataset.id);
             tile.classList.toggle('seleccionado', carrito.some(c => c.idProducto === id));
@@ -454,7 +634,6 @@
     function seleccionarProducto(tile) {
         const id = parseInt(tile.dataset.id);
         const stock = parseInt(tile.dataset.stock);
-
         if (stock <= 0) { alert('Sin stock disponible'); return; }
 
         const existe = carrito.findIndex(c => c.idProducto === id);
@@ -481,7 +660,7 @@
         if (carrito.length === 0) {
             container.style.display = 'none';
             tbody.innerHTML = '';
-            actualizarTotal();
+            actualizarTotales();
             return;
         }
 
@@ -503,14 +682,14 @@
                 </tr>`;
         });
 
-        actualizarTotal();
+        actualizarTotales();
     }
 
     function cambiarCantidad(index, valor) {
         const val = parseInt(valor);
-        if (val < 1) { carrito[index].cantidad = 1; }
-        else if (val > carrito[index].stockMax) { carrito[index].cantidad = carrito[index].stockMax; }
-        else { carrito[index].cantidad = val; }
+        if (val < 1) carrito[index].cantidad = 1;
+        else if (val > carrito[index].stockMax) carrito[index].cantidad = carrito[index].stockMax;
+        else carrito[index].cantidad = val;
         renderCarrito();
     }
 
@@ -523,19 +702,120 @@
         renderCarrito();
     }
 
-    function actualizarTotal() {
-        const total = carrito.reduce((sum, item) => sum + item.precioUnitario * item.cantidad, 0);
-        document.getElementById('carrito-total').textContent = `S/ ${total.toFixed(2)}`;
+    function abrirDescuentos() {
+        const modal = new bootstrap.Modal(document.getElementById('modalDescuentos'));
+        modal.show();
+        document.querySelectorAll('.descuento-tile').forEach(tile => {
+            const id = parseInt(tile.dataset.id);
+            tile.classList.toggle('seleccionado', descuentosSeleccionados.some(d => d.idDescuento === id));
+        });
+        const grid = document.getElementById('descuentos-grid');
+        const empty = document.getElementById('descuentos-empty');
+        empty.style.display = grid.children.length === 0 ? 'block' : 'none';
+    }
+
+    function filtrarDescuentosTienda() {
+        const q = document.getElementById('descuento-busqueda').value.toLowerCase();
+        document.querySelectorAll('.descuento-tile').forEach(tile => {
+            const nombre = tile.dataset.nombre.toLowerCase();
+            const producto = tile.dataset.producto.toLowerCase();
+            tile.style.display = (nombre.includes(q) || producto.includes(q)) ? '' : 'none';
+        });
+    }
+
+    function toggleDescuento(tile) {
+        const id = parseInt(tile.dataset.id);
+        const idx = descuentosSeleccionados.findIndex(d => d.idDescuento === id);
+
+        if (idx >= 0) {
+            descuentosSeleccionados.splice(idx, 1);
+            tile.classList.remove('seleccionado');
+        } else {
+            descuentosSeleccionados.push({
+                idDescuento: id,
+                nombreDescuento: tile.dataset.nombre,
+                porcentajeAplicado: parseFloat(tile.dataset.porcentaje),
+                tipoDescuento: tile.dataset.tipo,
+                colorCard: tile.dataset.color,
+                productoNombre: tile.dataset.producto
+            });
+            tile.classList.add('seleccionado');
+        }
+        renderDescuentos();
+        actualizarTotales();
+    }
+
+    function renderDescuentos() {
+        const section = document.getElementById('descuentos-section');
+        const lista = document.getElementById('descuentos-lista');
+
+        if (descuentosSeleccionados.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        lista.innerHTML = descuentosSeleccionados.map(d => `
+            <div class="descuento-aplicado-item">
+                <div class="descuento-color-dot dot-${d.colorCard}"></div>
+                <div class="descuento-aplicado-info">
+                    <div class="descuento-aplicado-nombre">${d.nombreDescuento}</div>
+                    <div class="descuento-aplicado-detalle">
+                        ${d.tipoDescuento === 'Total' ? 'Descuento total' : 'Por producto'} &middot; ${d.productoNombre}
+                    </div>
+                </div>
+                <span class="descuento-aplicado-porcentaje">-${d.porcentajeAplicado}%</span>
+                <button class="btn-quitar-descuento" onclick="quitarDescuento(${d.idDescuento})">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>`).join('');
+    }
+
+    function quitarDescuento(id) {
+        descuentosSeleccionados = descuentosSeleccionados.filter(d => d.idDescuento !== id);
+        document.querySelectorAll('.descuento-tile').forEach(tile => {
+            if (parseInt(tile.dataset.id) === id) tile.classList.remove('seleccionado');
+        });
+        renderDescuentos();
+        actualizarTotales();
+    }
+
+    function actualizarTotales() {
+        const subtotal = carrito.reduce((sum, item) => sum + item.precioUnitario * item.cantidad, 0);
+        document.getElementById('carrito-subtotal').textContent = `S/ ${subtotal.toFixed(2)}`;
+
+        let montoDescuento = 0;
+        let totalFinal = subtotal;
+
+        descuentosSeleccionados.forEach(d => {
+            const monto = totalFinal * (d.porcentajeAplicado / 100);
+            montoDescuento += monto;
+            totalFinal -= monto;
+        });
+
+        const rowDescuento = document.getElementById('row-descuento');
+        if (descuentosSeleccionados.length > 0) {
+            rowDescuento.style.display = 'flex';
+            document.getElementById('carrito-descuento').textContent = `- S/ ${montoDescuento.toFixed(2)}`;
+        } else {
+            rowDescuento.style.display = 'none';
+        }
+
+        document.getElementById('carrito-total').textContent = `S/ ${totalFinal.toFixed(2)}`;
     }
 
     function limpiarVenta() {
         carrito = [];
+        descuentosSeleccionados = [];
         document.getElementById('v-cliente').value = '';
         document.getElementById('v-documento').value = '';
         document.getElementById('v-telefono').value = '';
         document.getElementById('v-metodopago').value = 'Efectivo';
+        document.getElementById('descuentos-section').style.display = 'none';
         renderCarrito();
+        renderDescuentos();
         document.querySelectorAll('.producto-tile').forEach(t => t.classList.remove('seleccionado'));
+        document.querySelectorAll('.descuento-tile').forEach(t => t.classList.remove('seleccionado'));
     }
 
     function guardarVenta() {
@@ -543,14 +823,18 @@
         if (!cliente) { alert('El nombre del cliente es obligatorio'); return; }
         if (carrito.length === 0) { alert('Agrega al menos un producto'); return; }
 
-        const total = carrito.reduce((sum, item) => sum + item.precioUnitario * item.cantidad, 0);
+        const subtotal = carrito.reduce((sum, item) => sum + item.precioUnitario * item.cantidad, 0);
+        let totalFinal = subtotal;
+        descuentosSeleccionados.forEach(d => {
+            totalFinal -= totalFinal * (d.porcentajeAplicado / 100);
+        });
 
         const venta = {
             Cliente: cliente,
             DocumentoCliente: document.getElementById('v-documento').value,
             TelefonoCliente: document.getElementById('v-telefono').value,
             MetodoPago: document.getElementById('v-metodopago').value,
-            Total: total
+            Total: totalFinal
         };
 
         const detalles = carrito.map(item => ({
@@ -560,10 +844,15 @@
             SubTotal: item.precioUnitario * item.cantidad
         }));
 
+        const descuentos = descuentosSeleccionados.map(d => ({
+            IdDescuento: d.idDescuento,
+            PorcentajeAplicado: d.porcentajeAplicado
+        }));
+
         fetch('/Venta/GuardarVenta', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ venta, detalles })
+            body: JSON.stringify({ venta, detalles, descuentos })
         })
         .then(res => res.json())
         .then(result => {
@@ -602,14 +891,22 @@
                             <td>S/ ${parseFloat(d.subTotal).toFixed(2)}</td>
                         </tr>`;
                 });
+
+                const tbody2 = document.getElementById('d-descuentos');
+                tbody2.innerHTML = '';
+                (data.descuentos || []).forEach(des => {
+                    tbody2.innerHTML += `
+                        <tr>
+                            <td>${des.descuento?.nombreDescuento || '—'}</td>
+                            <td>${des.descuento?.tipoDescuento}</td>
+                            <td>${parseFloat(des.porcentajeAplicado).toFixed(2)}%</td>
+                        </tr>`;
+                });
             });
     }
 
     function anularVenta(id) {
         if (!confirm('¿Estás seguro de anular esta venta? Se revertirá el stock.')) return;
-
-        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
         fetch('/Venta/AnularVenta', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -624,4 +921,3 @@
 </script>
 </body>
 </html>
-

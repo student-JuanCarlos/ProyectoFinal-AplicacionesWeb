@@ -26,5 +26,7 @@ namespace CapaPresentacion.Models.VM
 
         public List<DetalleVentaVM> Detalles { get; set; }
 
+        public List<DetalleDescuentoVM> Descuentos { get; set; }
+
     }
 }

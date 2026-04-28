@@ -15,9 +15,9 @@ namespace SistemaLogistico.BussinesLogic.Services
             ventaDB = service;
         }
 
-        public int RegistroVenta(Venta venta, List<DetalleVenta> detalles)
+        public int RegistroVenta(Venta venta, List<DetalleVenta> detalles, List<DetalleDescuento> descuentos)
         {
-            return ventaDB.RegistrarVenta(venta, detalles);
+            return ventaDB.RegistrarVenta(venta, detalles, descuentos);
         }
 
         public Venta DetalleVenta(int id)

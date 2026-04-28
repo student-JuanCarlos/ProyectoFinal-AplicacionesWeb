@@ -439,6 +439,10 @@ CREATE TYPE TVP_DetalleVenta AS TABLE(
     IdProducto INT,
     Cantidad INT
 );
+CREATE TYPE TVP_DetalleDescuento AS TABLE(
+    IdDescuento INT NULL,
+    PorcentajeAplicado DECIMAL(5,2) NULL
+);
 GO
 CREATE PROC sp_RegistrarVenta
 @Cliente VARCHAR(60),
@@ -446,7 +450,8 @@ CREATE PROC sp_RegistrarVenta
 @TelefonoCliente VARCHAR(20),
 @MetodoPago VARCHAR(30),
 @IdUsuario INT,
-@Detalle TVP_DetalleVenta READONLY
+@Detalle TVP_DetalleVenta READONLY,
+@Descuento TVP_DetalleDescuento READONLY 
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -486,6 +491,24 @@ BEGIN
         FROM @Detalle d
         INNER JOIN Producto p ON p.IdProducto = d.IdProducto;
 
+        UPDATE DetalleVenta
+        SET PrecioUnitario = PrecioUnitario * (1 -(
+            SELECT ISNULL(SUM(PorcentajeAplicado), 0) / 100
+            FROM @Descuento de
+            INNER JOIN Descuento d ON d.IdDescuento = de.IdDescuento
+            WHERE d.TipoDescuento = 'Por producto' AND d.IdProducto = IdProducto
+        ))
+        FROM DetalleVenta dv
+        WHERE dv.IdVenta = @IdVenta
+        AND EXISTS(SELECT 1 FROM @Descuento de
+                   INNER JOIN Descuento d ON d.IdDescuento = de.IdDescuento
+                   WHERE d.TipoDescuento = 'Por producto'
+        )
+
+        INSERT INTO DetalleDescuento(IdVenta, IdDescuento, PorcentajeAplicado)
+        SELECT @IdVenta, de.IdDescuento, de.PorcentajeAplicado
+        FROM @Descuento de
+
         UPDATE p
         SET p.StockActual = p.StockActual - d.Cantidad
         FROM Producto p
@@ -508,6 +531,19 @@ BEGIN
             WHERE IdVenta = @IdVenta
         )
         WHERE IdVenta = @IdVenta;
+
+        UPDATE Venta 
+        SET Total = Total * (1 - (
+            SELECT ISNULL(SUM(de.PorcentajeAplicado), 0) / 100
+            FROM @Descuento de
+            INNER JOIN Descuento d ON d.IdDescuento = de.IdDescuento
+            WHERE d.TipoDescuento = 'Total'
+        ))
+        WHERE IdVenta = @IdVenta
+        AND EXISTS(SELECT 1 FROM @Descuento de
+                   INNER JOIN Descuento d ON d.IdDescuento = de.IdDescuento
+                   WHERE d.TipoDescuento = 'Total'
+        );
 
         COMMIT;
     END TRY
@@ -546,6 +582,13 @@ BEGIN
     FROM DetalleVenta dv
     INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
     WHERE dv.IdVenta = @IdVenta
+
+    SELECT
+    d.NombreDescuento,
+    d.TipoDescuento,
+    dd.PorcentajeAplicado
+    FROM DetalleDescuento dd
+    INNER JOIN Descuento d ON d.IdDescuento = dd.IdDescuento
 END
 
 GO
@@ -934,19 +977,19 @@ BEGIN
     SELECT 
         d.IdDescuento,
         d.NombreDescuento,
-        d.TipoDescuento,
         d.IdProducto,
-        p.NombreProducto,
+        ISNULL(p.NombreProducto, 'Aplica para toda la venta') AS NombreProducto,
+        d.TipoDescuento,
         d.PorcentajeDescuento,
+        d.FechaInicio,
         d.FechaFin,
         d.ColorCard,
         d.Estado
     FROM Descuento d
-    INNER JOIN Producto p ON p.IdProducto = d.IdProducto
+    LEFT JOIN Producto p ON p.IdProducto = d.IdProducto
     WHERE (@Busqueda IS NULL OR d.NombreDescuento LIKE '%'+@Busqueda+'%' OR p.NombreProducto LIKE '%'+@Busqueda+'%') AND
     d.Estado = 1
 END
-
 
 ------------------------------------------------------------------------------
 ----------SELECTS PRINCIPALES
